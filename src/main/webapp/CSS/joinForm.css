@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Poor+Story&display=swap');
+
+* {
+    font-family: 'Poor Story', cursive;
+}
+
+table,
+td,
+th {
+    /* border: 1px solid black; */
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 10px;
+}
+
+table {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+input {
+    border: 0px;
+    border-bottom: 2px solid goldenrod;
+    margin: 5px;
+}
+
+.subBtn1 {
+    font-size: large;
+    background-color: white;
+    border: 3px solid slategray;
+    padding: 10px 20px;
+    border-radius: 7px;
+}
+
+.subBtn1:hover {
+    background-color: goldenrod;
+    color: white;
+    cursor: pointer;
+}
+
+.font10 {
+    font-size: 13px;
+}

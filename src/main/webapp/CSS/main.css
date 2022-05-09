@@ -1,0 +1,51 @@
+/* main.css */
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Poor+Story&display=swap');
+
+* { font-family: 'Poor Story', cursive;}
+div{
+    border: 1px solid black;
+}
+.header{
+    text-align: center;
+    padding: 10px;
+    background-color: powderblue;
+    margin-bottom: 10px;
+}
+.navigation{
+    background-color: black;
+    color: white;
+    margin-bottom: 10px;
+    padding: 10px;
+}
+.navigation ul{
+    overflow: hidden;
+    list-style: none;
+    padding-left: 0px;
+}
+.navigation ul li{
+    float: left;
+    margin-right: 5px;
+    margin-left: 5px;
+    font-weight: bold;
+}
+li a{
+    text-decoration: none;
+    color: white;
+    padding: 5px;
+}
+.contents{
+    background-color: beige;
+    margin-bottom: 10px;
+    padding: 10px;
+    min-height: 300px; /*컨텐츠가 없어도 영역의 최소값*/
+}
+.footer{
+    background-color: silver;
+    text-align: center;
+    padding: 3px;
+
+}
+.content{
+    background-color: white;
+    padding: 10px;
+}
