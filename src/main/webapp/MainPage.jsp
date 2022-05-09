@@ -19,6 +19,9 @@
     <!-- Navigation 끝 -->
     <div class="contents">
         <h2>MainPage.jsp - 컨텐츠 영역</h2>
+        
+        <h2>세션값 확인 : ${sessionScope.loginId }</h2>
+        <!--             session 영역의 Attribute -->
     </div>
     <!-- Footer 시작 -->
     <%@ include file="includes/Footer.jsp" %>    

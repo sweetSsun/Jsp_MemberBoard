@@ -22,6 +22,7 @@
     <!-- Navigation 끝 -->    
     <div class="contents">
         <h2>MemberJoinForm.jsp - 컨텐츠 영역</h2>
+        <h2>세션값 확인 : ${sessionScope.loginId }</h2>
         <div class="content">
             <!-- 회원가입 양식 시작 -->
             <form action="memberJoin" method="post">
@@ -73,7 +74,7 @@
                         <input type="text" name="memberEmailId" id="emailId"> 
                         @
                         <input type="text" name="memberEmailDomain" id="emailDomain"> 
-                        <select id="domainSelect">
+                        <select id="domainSelect" onchange="domainChange()">
                             <option value="">직접입력</option>
                             <option value="naver.com">네이버</option>
                             <option value="daum.net">다음</option>
@@ -106,6 +107,12 @@
 </body>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
+	function domainChange(){
+		var domain =  document.getElementById("domainSelect").value;
+		console.log(domain);
+		document.getElementById("emailDomain").value = domain;
+	}
+	
     function sample6_execDaumPostcode() {
         new daum.Postcode({
             oncomplete: function(data) {

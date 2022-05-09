@@ -11,7 +11,12 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath }/CSS/main.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath }/CSS/joinForm.css">
 </head>
-
+<script type="text/javascript">
+	var checkMsg = "${param.checkMsg }";
+	if (checkMsg.length > 0 ){
+		alert(checkMsg);
+	}
+</script>
 <body>
     <!-- Header 시작 -->
     <%@ include file="../includes/Header.jsp" %>    
@@ -21,7 +26,8 @@
     <!-- Navigation 끝 -->
     <div class="contents">
         <h2>MemberLoginForm.jsp - 컨텐츠 영역</h2>
-        <form action="Login" method="post">
+        <h2>세션값 확인 : ${sessionScope.loginId }</h2>
+        <form action="memberLogin" method="post">
         <div class="content">
             <h2>로그인 Form</h2>
             <table>
@@ -38,12 +44,12 @@
                 </tr>
                 <tr>
                     <td colspan="2" style="text-align: center;">
-                        <input type="button" class="subBtn1" id="subBtn1" value="로그인">
+                        <input type="submit" class="subBtn1" id="subBtn1" value="로그인">
                     </td>
                 </tr>
             </table>
         </div>
-    </form>
+   		</form>
     </div>
     <!-- Footer 시작 -->
     <%@ include file="../includes/Footer.jsp" %>    

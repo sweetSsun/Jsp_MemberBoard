@@ -1,16 +1,22 @@
 package controller;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import dto.MemberDto;
+import service.MemberService;
 
 /**
  * Servlet implementation class MemberController
  */
-@WebServlet("/Member/memberJoin")
+@WebServlet({"/Member/memberJoin", "/Member/memberLogin", "/Member/memberLogout", "/Member/memberInfo"})
 public class MemberController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -30,7 +36,13 @@ public class MemberController extends HttpServlet {
 //		response.getWriter().append("Served at: ").append(request.getContextPath());
 		String url = request.getServletPath();
 		System.out.println("url : " + url);
+		String contaxtPath = request.getContextPath();
+		System.out.println("contaxtPath : " + contaxtPath);
+		
+		HttpSession session = request.getSession();
+		
 		request.setCharacterEncoding("UTF-8");
+		MemberService msvc = new MemberService();
 					
 		switch(url) {
 		case "/Member/memberJoin":
@@ -51,8 +63,60 @@ public class MemberController extends HttpServlet {
 			System.out.println("memberBirth : " + memberBirth);
 			System.out.println("memberEmail : " + memberEmail);
 			System.out.println("memberAddr : " + memberAddr);
+			
+			MemberDto joinMember = new MemberDto();
+			joinMember.setMid(memberId);
+			joinMember.setMpw(memberPw);
+			joinMember.setMname(memberName);
+			joinMember.setMbirth(memberBirth);
+			joinMember.setMemail(memberEmail);
+			joinMember.setMaddress(memberAddr);
+			
+			int insertResult = msvc.memberJoin(joinMember);
+			if (insertResult > 0) {
+				System.out.println("회원가입 성공");
+				response.sendRedirect(contaxtPath + "/MainPage.jsp");
+			} else {
+				System.out.println("회원가입 실패");
+			}
 			break;
 			
+		case "/Member/memberLogin":
+			System.out.println("로그인 요청");
+			String inputId = request.getParameter("userId");
+			String inputPw = request.getParameter("userPw");
+			System.out.println("입력한 아이디 : " + inputId);
+			System.out.println("입력한 비밀번호 : " + inputPw);
+			
+			// 1. 일치하는 회원정보 확인
+			String loginId = msvc.memberLogin(inputId, inputPw);
+			if (loginId != null) {
+				System.out.println("로그인 성공");
+				// 로그인 처리 - session에 로그인 아이디 저장
+				session.setAttribute("loginId", loginId);
+				// 파라미터가 아니라 세션 영역에 저장했기 때문에 브라우저에 소속. 값이 계속해서 남아있음.
+				// 메인페이지로
+				response.sendRedirect(contaxtPath + "/MainPage.jsp");
+			} else {
+				System.out.println("로그인 실패");
+				String errorMsg = "아이디나 비밀번호가 일치하지 않습니다.";
+				response.sendRedirect(contaxtPath + "/Member/MemberLoginForm.jsp?checkMsg="
+						+ URLEncoder.encode(errorMsg, "UTF-8"));
+			}
+			break;
+			
+		case "/Member/memberLogout":
+			System.out.println("로그아웃 요청");
+			session.invalidate(); // 세션값 초기화
+//			session.removeAttribute("loginId"); // 지정된 Attribute만 삭제
+			response.sendRedirect(contaxtPath + "/MainPage.jsp");
+			break;
+		
+		case "/Member/memberInfo":
+			System.out.println("내정보확인 요청");
+			String loginedId = (String) session.getAttribute("loginId");
+			System.out.println("로그인된 아이디 : " + loginedId);
+			break;
 		}
 	}
 
