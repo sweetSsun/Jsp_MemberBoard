@@ -65,6 +65,28 @@ public class MemberDao {
 		}		
 		return loginId;
 	}
+
+	public MemberDto getMemberInfo(String loginedId) {
+		String sql = "SELECT * FROM MEMBERS WHERE MID=?";
+		MemberDto memberInfo = null;
+		try {
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, loginedId);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				memberInfo = new MemberDto();
+				memberInfo.setMid(rs.getString(1));
+				memberInfo.setMpw(rs.getString(2));
+				memberInfo.setMname(rs.getString(3));
+				memberInfo.setMbirth(rs.getString(4));
+				memberInfo.setMemail(rs.getString(5));
+				memberInfo.setMaddress(rs.getString(6));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}		
+		return memberInfo;
+	}
 	
 	
 	

@@ -3,6 +3,7 @@ package controller;
 import java.io.IOException;
 import java.net.URLEncoder;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -40,6 +41,7 @@ public class MemberController extends HttpServlet {
 		System.out.println("contaxtPath : " + contaxtPath);
 		
 		HttpSession session = request.getSession();
+		RequestDispatcher dispatcher;
 		
 		request.setCharacterEncoding("UTF-8");
 		MemberService msvc = new MemberService();
@@ -110,12 +112,42 @@ public class MemberController extends HttpServlet {
 			session.invalidate(); // 세션값 초기화
 //			session.removeAttribute("loginId"); // 지정된 Attribute만 삭제
 			response.sendRedirect(contaxtPath + "/MainPage.jsp");
+			
+			// 경로 테스트
+//			response.sendRedirect("/Member/MainPage.jsp"); // X. 절대경로 :: http://localhost:8080/Member/MainPage.jsp
+//			response.sendRedirect("/MainPage.jsp"); // X. 절대경로. :: http://localhost:8080/MainPage.jsp
+//			response.sendRedirect("/Jsp_MemberBoard/MainPage.jsp"); // O. 절대경로. :: http://localhost:8080/Jsp_MemberBoard/MainPage.jsp
+//			response.sendRedirect("Member/MainPage.jsp"); // X. 상대경로 :: http://localhost:8080/Jsp_MemberBoard/Member/Member/MainPage.jsp
+//			response.sendRedirect("MainPage.jsp"); // X. 상대경로 :: http://localhost:8080/Jsp_MemberBoard/Member/MainPage.jsp
+//			response.sendRedirect("../MainPage.jsp"); // O. 상대경로 :: http://localhost:8080/Jsp_MemberBoard/MainPage.jsp
+			/* redirect 방식은 브라우저에서 호출됨
+			 * 절대경로의 기준은 IP 주소
+			 * 상대경로의 기준은 호출된 서블릿 맵핑주소
+			 */			
 			break;
 		
 		case "/Member/memberInfo":
 			System.out.println("내정보확인 요청");
 			String loginedId = (String) session.getAttribute("loginId");
 			System.out.println("로그인된 아이디 : " + loginedId);
+			MemberDto memberInfo = msvc.getMemberInfo(loginedId);
+			if (memberInfo != null) {
+				request.setAttribute("memberInfo", memberInfo);
+				
+				// 경로 테스트
+//				dispatcher = request.getRequestDispatcher("MainPage.jsp"); // X. 상대경로 :: 파일 [/Member/MainPage.jsp]을(를) 찾을 수 없습니다.
+//				dispatcher = request.getRequestDispatcher("../MainPage.jsp"); // O. 상대경로
+//				dispatcher = request.getRequestDispatcher("/MainPage.jsp"); // O. 절대경로
+				
+//				dispatcher = request.getRequestDispatcher("MemberInfo.jsp"); // O. 상대경로
+//				dispatcher = request.getRequestDispatcher("/MemberInfo.jsp"); // X. 절대경로
+				dispatcher = request.getRequestDispatcher("/Member/MemberInfo.jsp"); // O. 절대경로
+				/* dispatcher 방식은 서블릿에서 호출됨
+				 * 절대경로의 기준은 현재 프로젝트 경로(contextPath)
+				 * 상대경로의 기준은 호출된 서블릿 맵핑주소
+				 */
+				dispatcher.forward(request, response);							
+			}
 			break;
 		}
 	}

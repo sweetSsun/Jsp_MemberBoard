@@ -18,5 +18,11 @@ public class MemberService {
 		System.out.println("loginId : " + loginId);
 		return loginId;
 	}
+	public MemberDto getMemberInfo(String loginedId) {
+		System.out.println("MemberService.getMemberInfo() 호출");
+		MemberDto memberInfo = mdao.getMemberInfo(loginedId);
+		System.out.println(memberInfo);
+		return memberInfo;
+	}
 
 }
