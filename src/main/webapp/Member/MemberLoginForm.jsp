@@ -10,9 +10,11 @@
     
     <link rel="stylesheet" href="${pageContext.request.contextPath }/CSS/main.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath }/CSS/joinForm.css">
+    <!-- jQuery -->
+	<script	src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"	integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <script type="text/javascript">
-	var checkMsg = "${param.checkMsg }";
+ 	var checkMsg = "${param.checkMsg }";
 	if (checkMsg.length > 0 ){
 		alert(checkMsg);
 	}
@@ -27,7 +29,7 @@
     <div class="contents">
         <h2>MemberLoginForm.jsp - 컨텐츠 영역</h2>
         <h2>세션값 확인 : ${sessionScope.loginId }</h2>
-        <form action="memberLogin" method="post">
+        <form action="memberLogin" method="post" onsubmit="return checkSubmit()">
         <div class="content">
             <h2>로그인 Form</h2>
             <table>
@@ -55,4 +57,22 @@
     <%@ include file="../includes/Footer.jsp" %>    
     <!-- Footer 끝 -->
 </body>
+
+<script type="text/javascript">
+	function checkSubmit(){
+		console.log("checkSubmit() 호출")
+		var inputId = $("#inputId").val();
+		var inputPw = $("#inputPw").val();
+		if (inputId.length == 0 ){
+			alert("아이디를 입력해주세요.");
+			$("#inputId").focus();
+			return false;
+		} 
+		if (inputPw.length == 0) {
+			alert("비밀번호를 입력해주세요.");
+			$("#inputPw").focus();
+			return false;
+		}
+	}
+</script>
 </html>

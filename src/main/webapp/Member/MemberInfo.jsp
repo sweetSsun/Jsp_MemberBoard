@@ -34,3 +34,18 @@
     <!-- Footer 끝 -->
 </body>
 </html>
+
+
+<script type="text/javascript">
+	function checkId(){
+		var inputId = document.ElementById("userId").value;
+		if (inputId.length < 3 || inputId.length > 11) {
+			document.ElementById("idCheckMsg").value = "사용 가능합니다.";
+		} else {
+			document.ElementById("idCheckMsg").value = "3~10자리로 입력해주세요.";
+		}
+	}
+	// 4~10자리 :: 사용 가능합니다. 
+
+
+</script>

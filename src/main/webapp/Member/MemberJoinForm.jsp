@@ -1,118 +1,232 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>회원가입</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath }/CSS/main.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath }/CSS/joinForm.css">
-    
-    <script src="https://kit.fontawesome.com/9125416ae4.js" crossorigin="anonymous"></script>    
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>회원가입</title>
+<link rel="stylesheet"	href="${pageContext.request.contextPath }/CSS/main.css">
+<link rel="stylesheet"	href="${pageContext.request.contextPath }/CSS/joinForm.css">
+<!-- 폰트 -->
+<script src="https://kit.fontawesome.com/9125416ae4.js"	crossorigin="anonymous"></script>
+<!-- jQuery -->
+<script	src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"	integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 
 <body>
-    <!-- Header 시작 -->
-    <%@ include file="../includes/Header.jsp" %>    
-    <!-- Header 끝 -->
-    <!-- Navigation 시작 -->
-    <%@ include file="../includes/Navigation.jsp" %>    
-    <!-- Navigation 끝 -->    
-    <div class="contents">
-        <h2>MemberJoinForm.jsp - 컨텐츠 영역</h2>
-        <h2>세션값 확인 : ${sessionScope.loginId }</h2>
-        <div class="content">
-            <!-- 회원가입 양식 시작 -->
-            <form action="memberJoin" method="post">
-                <!-- submit 버튼을 누를 때 true이면 실행, false이면 실행X -->
-            <table>
-                <tr>
-                    <th colspan="3">회원가입</th>
-                </tr>
-                <tr>
-                    <td><i class="fa-regular fa-address-card"></i></td>
-                    <th>아이디</th>
-                    <td>
-                        <input type="text" name="memberId" id="userId" placeholder="4~10자리"> 
-                        <span id="idCheckMsg" class="font10"></span>
-                    </td>
-                </tr>
-                <tr>
-                    <td><i class="fa-regular fa-address-card"></i></td>
-                    <th>비밀번호</th>
-                    <td> 
-                        <input type="password" name="memberPw" id="userPw" placeholder="4~8자리">
-                        <span id="pwCheckMsg" class="font10"></span>
-                    </td>
-                </tr>
-                <tr>
-                    <td><i class="fa-regular fa-address-card"></i></td>
-                    <th>비밀번호 확인</th>
-                    <td> 
-                        <input type="password" id="pwConfirm"> 
-                        <span id="pwConfirmMsg" class="font10"></span>
-                    </td>
-                </tr>
-                <tr>
-                    <td><i class="fa-regular fa-address-card"></i></td>
-                    <th>이름</th>
-                    <td> <input type="text" name="memberName" required> </td>
-                    <!-- required : 입력했는지 확인해주는 속성
+	<!-- Header 시작 -->
+	<%@ include file="../includes/Header.jsp"%>
+	<!-- Header 끝 -->
+	<!-- Navigation 시작 -->
+	<%@ include file="../includes/Navigation.jsp"%>
+	<!-- Navigation 끝 -->
+	<div class="contents">
+		<h2>MemberJoinForm.jsp - 컨텐츠 영역</h2>
+		<h2>세션값 확인 : ${sessionScope.loginId }</h2>
+		<div class="content">
+			<!-- 회원가입 양식 시작 -->
+			<form action="memberJoin" method="post" onsubmit="return joinFormCheck()">
+				<!-- submit 버튼을 누를 때 true이면 실행, false이면 실행X -->
+				<table>
+					<tr>
+						<th colspan="3">회원가입</th>
+					</tr>
+					<tr>
+						<td><i class="fa-regular fa-address-card"></i></td>
+						<th>아이디</th>
+						<td><input type="text" name="memberId" id="userId"
+							placeholder="3~10자리" onfocusout="checkId()"> <span
+							id="idCheckMsg" class="font10"></span></td>
+					</tr>
+					<tr>
+						<td><i class="fa-regular fa-address-card"></i></td>
+						<th>비밀번호</th>
+						<td><input type="password" name="memberPw" id="userPw"
+							placeholder="4~10자리" onfocusout="checkPw()"> <span
+							id="pwCheckMsg" class="font10"></span></td>
+					</tr>
+					<tr>
+						<td><i class="fa-regular fa-address-card"></i></td>
+						<th>비밀번호 확인</th>
+						<td><input type="password" id="pwConfirm"> <span
+							id="pwConfirmMsg" class="font10"></span></td>
+					</tr>
+					<tr>
+						<td><i class="fa-regular fa-address-card"></i></td>
+						<th>이름</th>
+						<td><input type="text" name="memberName" id="userName"></td>
+						<!-- required : 입력했는지 확인해주는 속성
                         required만 단독으로 써도 되고 required="required" 라고 써도 작동 (속성값이 required 뿐) -->
-                </tr>
-                <tr>
-                    <td><i class="fa-regular fa-address-card"></i></td>
-                    <th>생년월일</th>
-                    <td> <input type="date" name="memberBirth"> </td>
-                </tr>
-                <tr>
-                    <td><i class="fa-regular fa-address-card"></i></td>
-                    <th>이메일</th>
-                    <td> 
-                        <input type="text" name="memberEmailId" id="emailId"> 
-                        @
-                        <input type="text" name="memberEmailDomain" id="emailDomain"> 
-                        <select id="domainSelect" onchange="domainChange()">
-                            <option value="">직접입력</option>
-                            <option value="naver.com">네이버</option>
-                            <option value="daum.net">다음</option>
-                            <option value="gmail.com">구글</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td><i class="fa-regular fa-address-card"></i></td>
-                    <th>주소</th>
-                    <td> 
-                        <input type="text" id="sample6_postcode" name="memberPostCode" placeholder="우편번호">
-                        <input type="button" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
-                        <input type="text" id="sample6_address" name="memberAddress" placeholder="주소"><br>
-                        <input type="text" id="sample6_detailAddress" name="memberDetailAddress" placeholder="상세주소">
-                        <input type="text" id="sample6_extraAddress" name="memberExtraAddress" placeholder="참고항목">    
-                    </td>
-                </tr>
-                <tr>
-                    <th colspan="3"> <input type="submit" class="subBtn1" value="회원가입"> </th>
-                </tr>
-            </table>
-            </form>
+					</tr>
+					<tr>
+						<td><i class="fa-regular fa-address-card"></i></td>
+						<th>생년월일</th>
+						<td><input type="date" name="memberBirth" id="userBirth" ></td>
+					</tr>
+					<tr>
+						<td><i class="fa-regular fa-address-card"></i></td>
+						<th>이메일</th>
+						<td><input type="text" name="memberEmailId" id="emailId"> 
+							@ <input type="text" name="memberEmailDomain" id="emailDomain" > 
+							<select id="domainSelect">
+								<option value="">직접입력</option>
+								<option value="naver.com">네이버</option>
+								<option value="daum.net">다음</option>
+								<option value="gmail.com">구글</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td><i class="fa-regular fa-address-card"></i></td>
+						<th>주소</th>
+						<td>
+							<input type="text" id="sample6_postcode" name="memberPostCode" placeholder="우편번호" > 
+							<input type="button" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
+							<input type="text"	id="sample6_address" name="memberAddress" placeholder="주소"><br>
+							<input type="text"	id="sample6_detailAddress" name="memberDetailAddress"	placeholder="상세주소" >
+							<input type="text" id="sample6_extraAddress" name="memberExtraAddress" placeholder="참고항목">
+						</td>
+					</tr>
+					<tr>
+						<th colspan="3"><input type="submit" class="subBtn1" value="회원가입"></th>
+					</tr>
+				</table>
+			</form>
 
-        </div>
-    </div>
-    <!-- Footer 시작 -->
-    <%@ include file="../includes/Footer.jsp" %>    
-    <!-- Footer 끝 -->
+		</div>
+	</div>
+	<!-- Footer 시작 -->
+	<%@ include file="../includes/Footer.jsp"%>
+	<!-- Footer 끝 -->
 </body>
-<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-<script>
-	function domainChange(){
+<script type="text/javascript">
+	var formIdCheck = false;
+	var formPwCheck = false;
+	// 아이디 규격 확인
+	function checkId(){
+		var inputId = document.getElementById("userId").value;
+		console.log(inputId);
+		if (inputId.length == 0) {
+			document.getElementById("idCheckMsg").innerText = "아이디를 입력해주세요.";
+			document.getElementById("idCheckMsg").style.color = "red";
+			formIdCheck = false;
+		} else if (inputId.length < 3 || inputId.length > 10) {
+			document.getElementById("idCheckMsg").innerText = "3~10자리로 입력해주세요.";
+			document.getElementById("idCheckMsg").style.color = "red";
+			formIdCheck = false;
+		} else {
+			document.getElementById("idCheckMsg").innerText = "사용 가능합니다.";
+			document.getElementById("idCheckMsg").style.color = "green";
+			formIdCheck = true;
+		}
+	}
+	// 비밀번호 규격 확인
+	function checkPw(){
+		var inputPw = $("#userPw").val();
+		console.log(inputPw);
+		if (inputPw.length == 0) {
+			$("#pwCheckMsg").css("color","red").text("비밀번호를 입력해주세요.");
+			formPwCheck = false;
+		} else if (inputPw.length < 4 || inputPw.length > 10) {
+			$("#pwCheckMsg").css("color","red").text("4~10자리로 입력해주세요.");
+			formPwCheck = false;
+		} else {
+			$("#pwCheckMsg").css("color","green").text("사용 가능합니다.");
+		}
+	}
+	
+	$(document).ready( function() {
+		// 비밀번호 일치 확인
+		$("#pwConfirm").focusout(function() {
+			var pwConfirm = $("#pwConfirm").val();
+			var inputPw = $("#userPw").val();
+			console.log(pwConfirm);
+			if (pwConfirm != inputPw) {
+				$("#pwConfirmMsg").css("color","red").text("불일치");
+				formPwCheck = false;
+			} else {
+				$("#pwConfirmMsg").css("color","green").text("일치");
+				if (inputPw.length < 4 || inputPw.length > 10) {
+					formPwCheck = false;					
+				} else {
+					formPwCheck = true;
+				}
+			}		
+		});
+		
+		// 이메일도메인 value 변경
+		$("#domainSelect").change(function() {
+			var selDomain = $("#domainSelect").val();
+			$("#emailDomain").val(selDomain);
+		});
+	});
+	
+/* 	function domainChange(){
 		var domain =  document.getElementById("domainSelect").value;
 		console.log(domain);
 		document.getElementById("emailDomain").value = domain;
-	}
+	} */
 	
+</script>
+
+<script type="text/javascript">
+	// 회원가입 폼 확인
+	function joinFormCheck(){
+		console.log("joinFormCheck() 호출");
+		/* 1. 아이디 */
+		if(!formIdCheck) {
+			alert("아이디를 확인해주세요.");
+			$("#userId").focus();
+			return false;
+		}
+		/* 2. 비밀번호 */
+		if(!formPwCheck) {
+			alert("비밀번호를 확인해주세요.");
+			$("#userPw").focus();
+			return false;
+		}
+		/* 3. 이름 입력 유무 */
+		var userName = $("#userName").val();
+		if (userName.length == 0 || userName.length > 10) {
+			alert("이름을 확인해주세요.");
+			$("#userName").focus();
+			return false;
+		}
+		/* 4. 생년월일 입력 유무 */
+		if ($("#userBirth").val().length == 0) {
+			alert("생년월일을 입력해주세요.");
+			$("#userBirth").focus();
+			return false;
+		}
+		/* 5. 이메일 입력 유무 */
+		if ($("#emailId").val().length == 0) {
+			alert("이메일을 입력해주세요.");
+			$("#emailId").focus();
+			return false;
+		}
+		if ($("#emailDomain").val().length == 0) {
+			alert("이메일도메인을 입력해주세요.");
+			$("#emailDomain").focus();
+			return false;
+		}
+		/* 6. 주소 입력 유무 */
+		var userPostcode = $("#sample6_postcode").val();
+		var userAddress = $("#sample6_address").val();
+		var userDetailAddress = $("#sample6_detailAddress").val();
+		if (userPostcode.length == 0 || userAddress.length == 0 || userDetailAddress.length == 0) {
+			alert("주소를 확인해주세요."); 
+			$("#sample6_address").focus();
+			return false;
+		}
+	}
+</script>
+
+<script
+	src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+
     function sample6_execDaumPostcode() {
         new daum.Postcode({
             oncomplete: function(data) {
