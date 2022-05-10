@@ -8,6 +8,25 @@ public class MemberDto {
 	private String memail;
 	private String maddress;
 	
+	private String memailId;
+	private String memailDomain;
+		
+	public String getMemailId() {
+		return memailId;
+	}
+
+	public void setMemailId(String memailId) {
+		this.memailId = memailId;
+	}
+
+	public String getMemailDomain() {
+		return memailDomain;
+	}
+
+	public void setMemailDomain(String memailDomain) {
+		this.memailDomain = memailDomain;
+	}
+
 	public String getMid() {
 		return mid;
 	}

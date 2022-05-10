@@ -17,7 +17,8 @@ import service.MemberService;
 /**
  * Servlet implementation class MemberController
  */
-@WebServlet({"/Member/memberJoin", "/Member/memberLogin", "/Member/memberLogout", "/Member/memberInfo"})
+@WebServlet({"/Member/memberIdCheck", "/Member/memberJoin", "/Member/memberLogin", "/Member/memberLogout", 
+			"/Member/memberInfo"})
 public class MemberController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -47,6 +48,16 @@ public class MemberController extends HttpServlet {
 		MemberService msvc = new MemberService();
 					
 		switch(url) {
+		
+		case "/Member/memberIdCheck":
+			System.out.println("아이디 중복확인 요청");
+			String confirmId = request.getParameter("inputId");
+			System.out.println("중복확인 할 아이디 : " + confirmId);
+			// 아이디 중복확인 서비스 호출 (검색결과가 없으면 OK, 있으면 NO)
+			String result = msvc.memberIdCheck(confirmId);
+			response.getWriter().append(result);			
+			break;
+			
 		case "/Member/memberJoin":
 			System.out.println("회원가입 요청");
 			String memberId = request.getParameter("memberId");					
@@ -128,11 +139,16 @@ public class MemberController extends HttpServlet {
 		
 		case "/Member/memberInfo":
 			System.out.println("내정보확인 요청");
-			String loginedId = (String) session.getAttribute("loginId");
-			System.out.println("로그인된 아이디 : " + loginedId);
-			MemberDto memberInfo = msvc.getMemberInfo(loginedId);
+			String session_mid = (String) session.getAttribute("loginId");
+			System.out.println("세션 아이디 : " + session_mid);
+			String param_mid = request.getParameter("mid");
+			System.out.println("파라미터 아이디 : " + param_mid);
+
+			MemberDto memberInfo = msvc.getMemberInfo(session_mid);
 			if (memberInfo != null) {
 				request.setAttribute("memberInfo", memberInfo);
+				dispatcher = request.getRequestDispatcher("/Member/MemberInfo.jsp"); // O. 절대경로
+				dispatcher.forward(request, response);							
 				
 				// 경로 테스트
 //				dispatcher = request.getRequestDispatcher("MainPage.jsp"); // X. 상대경로 :: 파일 [/Member/MainPage.jsp]을(를) 찾을 수 없습니다.
@@ -141,14 +157,14 @@ public class MemberController extends HttpServlet {
 				
 //				dispatcher = request.getRequestDispatcher("MemberInfo.jsp"); // O. 상대경로
 //				dispatcher = request.getRequestDispatcher("/MemberInfo.jsp"); // X. 절대경로
-				dispatcher = request.getRequestDispatcher("/Member/MemberInfo.jsp"); // O. 절대경로
+//				dispatcher = request.getRequestDispatcher("/Member/MemberInfo.jsp"); // O. 절대경로
 				/* dispatcher 방식은 서블릿에서 호출됨
 				 * 절대경로의 기준은 현재 프로젝트 경로(contextPath)
 				 * 상대경로의 기준은 호출된 서블릿 맵핑주소
 				 */
-				dispatcher.forward(request, response);							
 			}
 			break;
+	
 		}
 	}
 

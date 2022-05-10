@@ -12,8 +12,8 @@
     	        <li><a href="${pageContext.request.contextPath }/Member/MemberLoginForm.jsp">로그인</a></li>
             </c:when>
             <c:otherwise>
-	           <%--  <li><a href="${pageContext.request.contextPath }/Member/memberInfo?mid=${sessionScope.loginId }">내정보확인</a></li> --%>
-	            <li><a href="${pageContext.request.contextPath }/Member/memberInfo">내정보확인</a></li>
+	            <li><a href="${pageContext.request.contextPath }/Member/memberInfo?mid=${sessionScope.loginId }">내정보확인</a></li>
+	            <%-- <li><a href="${pageContext.request.contextPath }/Member/memberInfo">내정보확인</a></li> --%>
     	        <li><a href="${pageContext.request.contextPath }/Member/memberLogout">로그아웃</a></li>    
             </c:otherwise>
             </c:choose>            

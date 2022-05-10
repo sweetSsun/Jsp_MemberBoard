@@ -7,6 +7,7 @@
 	<title>내정보확인</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath }/CSS/main.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath }/CSS/joinForm.css">
+    <script src="https://kit.fontawesome.com/9125416ae4.js"	crossorigin="anonymous"></script>
 </head>
 <body>
     <!-- Header 시작 -->
@@ -19,14 +20,40 @@
         <h2>MemberInfo.jsp - 컨텐츠 영역</h2>
         <h2>세션값 확인 : ${sessionScope.loginId }</h2>
         <div class="content">
-        	<ul>
-        		<li>아이디 : ${memberInfo.mid }
-        		<li>비밀번호 : ${memberInfo.mpw }
-        		<li>성함 : ${memberInfo.mname }
-        		<li>생년월일 : ${memberInfo.mbirth }
-        		<li>메일 : ${memberInfo.memail }
-        		<li>주소 : ${memberInfo.maddress }
-        	</ul>        
+        <table>
+        	<tr>
+        		<th><i class="fa-regular fa-address-card"></i></th>
+        		<th>아이디</th>
+        		<td colspan="3">${memberInfo.mid }</td>
+        	</tr>
+        	<tr>
+        		<th><i class="fa-regular fa-address-card"></i></th>
+        		<th>비밀번호</th>
+        		<td colspan="3">${memberInfo.mpw }</td>
+        	</tr>
+        	<tr>
+        		<th><i class="fa-regular fa-address-card"></i></th>
+        		<th>성함</th>
+        		<td colspan="3">${memberInfo.mname }</td>
+        	</tr>
+        	<tr>
+        		<th><i class="fa-regular fa-address-card"></i></th>
+        		<th>생년월일</th>
+        		<td colspan="3">${memberInfo.mbirth }</td>
+        	</tr>
+        	<tr>
+        		<th><i class="fa-regular fa-address-card"></i></th>
+        		<th>메일</th>
+        		<td>${memberInfo.memailId }</td>
+        		<td>@</td>
+        		<td>${memberInfo.memailDomain }</td>
+        	</tr>
+        	<tr>
+        		<th><i class="fa-regular fa-address-card"></i></th>
+        		<th>주소</th>
+        		<td colspan="3">${memberInfo.maddress }</td>
+        	</tr>
+        </table>
   		</div>
     </div>
     <!-- Footer 시작 -->
@@ -34,18 +61,3 @@
     <!-- Footer 끝 -->
 </body>
 </html>
-
-
-<script type="text/javascript">
-	function checkId(){
-		var inputId = document.ElementById("userId").value;
-		if (inputId.length < 3 || inputId.length > 11) {
-			document.ElementById("idCheckMsg").value = "사용 가능합니다.";
-		} else {
-			document.ElementById("idCheckMsg").value = "3~10자리로 입력해주세요.";
-		}
-	}
-	// 4~10자리 :: 사용 가능합니다. 
-
-
-</script>

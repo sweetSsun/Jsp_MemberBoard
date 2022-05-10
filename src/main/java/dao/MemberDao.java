@@ -67,7 +67,8 @@ public class MemberDao {
 	}
 
 	public MemberDto getMemberInfo(String loginedId) {
-		String sql = "SELECT * FROM MEMBERS WHERE MID=?";
+		String sql = "SELECT MID, MPW, MNAME, TO_CHAR(MBIRTH, 'YYYY.MM.DD'), MEMAIL, MADDRESS"
+				+ " FROM MEMBERS WHERE MID=?";
 		MemberDto memberInfo = null;
 		try {
 			pstmt = con.prepareStatement(sql);
@@ -86,6 +87,22 @@ public class MemberDao {
 			e.printStackTrace();
 		}		
 		return memberInfo;
+	}
+
+	public String selectMemberIdCheck(String confirmId) {
+		String sql = "SELECT MID FROM MEMBERS WHERE MID=?";
+		String checkResult = "NO";
+		try {
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, confirmId);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				checkResult = "OK";
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return checkResult;
 	}
 	
 	

@@ -9,7 +9,7 @@
 <title>회원가입</title>
 <link rel="stylesheet"	href="${pageContext.request.contextPath }/CSS/main.css">
 <link rel="stylesheet"	href="${pageContext.request.contextPath }/CSS/joinForm.css">
-<!-- 폰트 -->
+<!-- 아이콘 -->
 <script src="https://kit.fontawesome.com/9125416ae4.js"	crossorigin="anonymous"></script>
 <!-- jQuery -->
 <script	src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"	integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -117,9 +117,26 @@
 			document.getElementById("idCheckMsg").style.color = "red";
 			formIdCheck = false;
 		} else {
-			document.getElementById("idCheckMsg").innerText = "사용 가능합니다.";
-			document.getElementById("idCheckMsg").style.color = "green";
-			formIdCheck = true;
+			// 아이디 중복 체크
+			$.ajax({
+				type : "get",					 // 어떻게
+				url : "memberIdCheck", 			 // 어디로
+				data : { "inputId" : inputId },  // 무엇을. JSON 형태. 왼: key / 오: value
+//				dataType : 						 // 서버에서 return 받을 데이터의 형태
+				success : function(result){ 	 // 통신이 성공하면 수행할 기능. result : 서버에서 보내준 데이터
+					console.log(result);
+					if(result == "OK"){
+						$("#idCheckMsg").css("color","green").text("사용 가능합니다.")
+						formIdCheck = true;				
+					} else {
+						$("#idCheckMsg").css("color","red").text("중복된 아이디입니다.")
+						formIdCheck = false;				
+					}					
+				},
+				error : function(){				 // 통신이 실패하면 수행할 기능 (없어도 됨)
+					alert("서버 연결실패")
+				}
+			});
 		}
 	}
 	// 비밀번호 규격 확인
