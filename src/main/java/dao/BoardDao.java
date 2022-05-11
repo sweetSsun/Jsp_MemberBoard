@@ -99,7 +99,7 @@ public class BoardDao {
 			pstmt.setInt(1, bno);
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
-				// 조회수 증가
+				// select 되면 조회수 증가
 				sql = "UPDATE BOARDS SET BHITS=BHITS+1 WHERE BNO=?";
 				pstmt = con.prepareStatement(sql);
 				pstmt.setInt(1, bno);

@@ -55,12 +55,16 @@
         			</td>
         		</tr>
         		</c:if>
+        		
+        		<c:if test="${sessionScope.loginId == boardInfo.bwriter }">
 				<tr>
 					<th colspan="6">
 						<button>글 수정</button>
 						<button>글 삭제</button>
 					</th>
 				</tr>
+        		</c:if>
+				
         	</table>
         
         </div>
@@ -70,4 +74,5 @@
     <%@ include file="../includes/Footer.jsp" %>    
     <!-- Footer 끝 -->
 </body>
+
 </html>
