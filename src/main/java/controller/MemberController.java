@@ -98,8 +98,10 @@ public class MemberController extends HttpServlet {
 			System.out.println("로그인 요청");
 			String inputId = request.getParameter("userId");
 			String inputPw = request.getParameter("userPw");
+			String afterUrl = request.getParameter("afterUrl");
 			System.out.println("입력한 아이디 : " + inputId);
 			System.out.println("입력한 비밀번호 : " + inputPw);
+			System.out.println("로그인 후 URL : " + afterUrl);
 			
 			// 1. 일치하는 회원정보 확인
 			String loginId = msvc.memberLogin(inputId, inputPw);
@@ -108,8 +110,13 @@ public class MemberController extends HttpServlet {
 				// 로그인 처리 - session에 로그인 아이디 저장
 				session.setAttribute("loginId", loginId);
 				// 파라미터가 아니라 세션 영역에 저장했기 때문에 브라우저에 소속. 값이 계속해서 남아있음.
-				// 메인페이지로
-				response.sendRedirect(contaxtPath + "/MainPage.jsp");
+				if (afterUrl.length() > 0) {
+					// afterUrl이 있을 경우 로그인 후 글목록페이지로
+					response.sendRedirect(contaxtPath + "/" + afterUrl);
+				} else {
+					// afterUrl이 없을 경우 로그인 후 메인페이지로
+					response.sendRedirect(contaxtPath + "/MainPage.jsp");					
+				}
 			} else {
 				System.out.println("로그인 실패");
 				String errorMsg = "아이디나 비밀번호가 일치하지 않습니다.";

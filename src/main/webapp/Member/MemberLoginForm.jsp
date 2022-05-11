@@ -34,7 +34,9 @@
             <h2>로그인 Form</h2>
             <table>
                 <tr>
-                    <th colspan="2">로그인</th>
+                    <th colspan="2">로그인
+                    <input type="hidden" name="afterUrl" value="${param.url }">
+                    </th>
                 </tr>
                 <tr>
                     <th>아이디</th>

@@ -5,6 +5,7 @@
     <div class="navigation">
         <ul>
             <li><a href="${pageContext.request.contextPath }/MainPage.jsp">메인페이지</a></li>
+            <li><a href="${pageContext.request.contextPath }/Board/boardList">게시판</a></li>
             
             <c:choose>
             <c:when test="${sessionScope.loginId == null }">
