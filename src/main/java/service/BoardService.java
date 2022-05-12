@@ -10,6 +10,7 @@ public class BoardService {
 
 	private BoardDao bdao = new BoardDao();
 	
+	// 글 작성
 	public int boardWrite(BoardDto boardWrite, String savePath) {
 		System.out.println("BoardService.boardWrite() 호출");
 		// 글번호 생성
@@ -19,7 +20,7 @@ public class BoardService {
 		System.out.println("bno : " + bno);
 		System.out.println(boardWrite);
 		
-		int insertResult = bdao.insertBoardWrite(boardWrite);
+		int insertResult = bdao.insertBoard(boardWrite);
 		System.out.println("insertResult : " + insertResult);
 		if(insertResult <= 0) {
 			// 글 등록 실패 시 파일 삭제
@@ -31,16 +32,50 @@ public class BoardService {
 		return insertResult;
 	}
 
+	// 글 목록 조회
 	public ArrayList<BoardDto> getBoardList() {
 		System.out.println("BoardService.getBoardList() 호출");
 		ArrayList<BoardDto> boardList = bdao.getBoardList();		
 		return boardList;
 	}
 
-	public BoardDto getBoardInfo(int bno) {
+//	public int plusBhits(int bno) {
+//		System.out.println("BoardService.plusBhits() 호출");
+//		int updateResult = bdao.plusBhits(bno);
+//		return updateResult;
+//	}
+
+	// 글 상세정보 조회
+	public BoardDto getBoardView(int bno, boolean check) {
 		System.out.println("BoardService.getBoardInfo() 호출");
-		BoardDto boardInfo = bdao.getBoardInfo(bno);
-		return boardInfo;
+		BoardDto boardView = bdao.getBoardView(bno);
+		
+		if(check) { // 글 상세보기인지, 글 수정인지 확인
+			// 조회수 증가
+			System.out.println("BoardService.plusBhits() 호출");
+			bdao.plusBhits(bno);
+			// 개행문자 변환
+			String bcontents = boardView.getBcontents();
+			bcontents = bcontents.replaceAll(" ", "&nbsp;");
+			bcontents = bcontents.replaceAll("\r\n", "<br>");
+			boardView.setBcontents(bcontents);			
+			System.out.println("개행문자 변환 후 : " + boardView.getBcontents());
+		}
+		return boardView;
+	}
+
+	// 글 삭제 (state 변경)
+	public int boardDelete(int delBno) {
+		System.out.println("BoardService.boardDelete() 호출");
+		int delResult = bdao.updateBstate(delBno);
+		return delResult;
+	}
+
+	// 글 수정
+	public int updateBoard(BoardDto modiBoard) {
+		System.out.println("BoardService.updateBoard() 호출");
+		int updateResult = bdao.updateBoard(modiBoard);
+		return updateResult;
 	}
 
 

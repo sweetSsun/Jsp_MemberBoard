@@ -27,6 +27,12 @@ input {
     margin: 5px;
 }
 
+.textarea {
+	box-sizing: border-box;
+	border: 2px solid goldenrod;
+	margin: 5px;
+}
+
 .subBtn1 {
     font-size: large;
     background-color: white;

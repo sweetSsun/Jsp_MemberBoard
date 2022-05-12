@@ -48,7 +48,7 @@ public class BoardDao {
 	}
 
 	//글 등록 기능
-	public int insertBoardWrite(BoardDto boardWrite) {
+	public int insertBoard(BoardDto boardWrite) {
 		String sql = "INSERT INTO BOARDS(BNO, BWRITER, BTITLE, BCONTENTS, BDATE, BFILENAME, BHITS)"
 				+ " VALUES (?,?,?,?,SYSDATE,?,0)";
 		int insertResult = 0;
@@ -68,7 +68,7 @@ public class BoardDao {
 
 	// 글 목록 select
 	public ArrayList<BoardDto> getBoardList() {
-		String sql = "SELECT * FROM BOARDS ORDER BY BNO";
+		String sql = "SELECT * FROM BOARDS WHERE BSTATE=0 ORDER BY BNO";
 		ArrayList<BoardDto> boardList = new ArrayList<BoardDto>();
 		BoardDto board = null;
 		try {
@@ -91,33 +91,71 @@ public class BoardDao {
 		return boardList;
 	}
 
-	public BoardDto getBoardInfo(int bno) {
+	public int plusBhits(int bno) {
+		String sql = "UPDATE BOARDS SET BHITS=BHITS+1 WHERE BNO=?";
+		int updateResult = 0;
+		try {
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, bno);
+			updateResult = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}		
+		return updateResult;
+	}
+	
+	public BoardDto getBoardView(int bno) {
 		String sql = "SELECT * FROM BOARDS WHERE BNO=?";
-		BoardDto boardInfo = null;
+		BoardDto boardView = null;
 		try {
 			pstmt = con.prepareStatement(sql);
 			pstmt.setInt(1, bno);
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
-				// select 되면 조회수 증가
-				sql = "UPDATE BOARDS SET BHITS=BHITS+1 WHERE BNO=?";
-				pstmt = con.prepareStatement(sql);
-				pstmt.setInt(1, bno);
-				int updateResult = pstmt.executeUpdate();
-				
-				boardInfo = new BoardDto();
-				boardInfo.setBno(rs.getInt(1));
-				boardInfo.setBwriter(rs.getString(2));
-				boardInfo.setBtitle(rs.getString(3));
-				boardInfo.setBcontents(rs.getString(4));
-				boardInfo.setBdate(rs.getString(5));
-				boardInfo.setBfilename(rs.getString(6));
-				boardInfo.setBhits(rs.getInt(7)+1);
+				boardView = new BoardDto();
+				boardView.setBno(rs.getInt(1));
+				boardView.setBwriter(rs.getString(2));
+				boardView.setBtitle(rs.getString(3));
+				boardView.setBcontents(rs.getString(4));
+				boardView.setBdate(rs.getString(5));
+				boardView.setBfilename(rs.getString(6));
+				boardView.setBhits(rs.getInt(7)+1); // 증가된 조회수 보이도록
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}		
-		return boardInfo;
+		return boardView;
 	}
+
+	public int updateBstate(int delBno) {
+		String sql = "UPDATE BOARDS SET BSTATE=1 WHERE BNO=?";
+		int delResult = 0;
+		try {
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, delBno);
+			delResult = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return delResult;
+	}
+
+	public int updateBoard(BoardDto modiBoard) {
+		String sql = "UPDATE BOARDS SET BTITLE=?, BCONTENTS=?, BFILENAME=?"
+					+ " WHERE BNO=?";
+		int updateResult = 0;
+		try {
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, modiBoard.getBtitle());
+			pstmt.setString(2, modiBoard.getBcontents());
+			pstmt.setString(3, modiBoard.getBfilename());
+			pstmt.setInt(4, modiBoard.getBno());
+			updateResult = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}		
+		return updateResult;
+	}
+
 
 }

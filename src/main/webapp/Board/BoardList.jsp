@@ -10,6 +10,15 @@
     <link rel="stylesheet"	href="${pageContext.request.contextPath }/CSS/joinForm.css">
 	<script src="https://kit.fontawesome.com/9125416ae4.js" crossorigin="anonymous"></script>
 </head>
+<script type="text/javascript">
+	// 글 삭제 성공 alert창 띄우기
+	var checkMsg = "${param.checkMsg }";
+	console.log(checkMsg)
+	if (checkMsg.length > 0) {
+		alert(checkMsg);
+	}
+</script>
+
 <body>
     <!-- Header 시작 -->
     <%@ include file="../includes/Header.jsp" %>    
@@ -48,7 +57,7 @@
         		<tr>
         			<td>${board.bno }</td>
         			<td style="width: 40%;">
-        				<a href="${pageContext.request.contextPath }/Board/boardInfo?bno=${board.bno }">${board.btitle }</a>
+        				<a href="${pageContext.request.contextPath }/Board/boardView?bno=${board.bno }">${board.btitle }</a>
 	        			<c:if test="${board.bfilename != null }">
     	    				<i class="fa-regular fa-file"></i>
         				</c:if>

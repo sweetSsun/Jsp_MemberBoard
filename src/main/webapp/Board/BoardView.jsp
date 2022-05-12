@@ -20,53 +20,56 @@
     <!-- Navigation 끝 -->
 
     <div class="contents">
-        <h2>BoardInfo.jsp - 컨텐츠 영역</h2>
+        <h2>BoardView.jsp - 컨텐츠 영역</h2>
         <h2>세션값 확인 : ${sessionScope.loginId }</h2>
         
         <div class="content">
         	<table>
         		<tr>
         			<th>글번호</th>
-        			<td>${boardInfo.bno }</td>
+        			<td>${boardView.bno }</td>
         			<th>작성일</th>
-        			<td>${boardInfo.bdate }</td>
+        			<td>${boardView.bdate }</td>
         			<th>조회수</th>
-        			<td>${boardInfo.bhits }</td>
+        			<td>${boardView.bhits }</td>
         		</tr>
         		<tr>
         			<th>작성자</th>
-        			<td colspan="5">${boardInfo.bwriter }</td>
+        			<td colspan="5">${boardView.bwriter }</td>
         		</tr>
         		<tr>
         			<th>제목</th>
-        			<td colspan="5">${boardInfo.btitle }</td>
+        			<td colspan="5">${boardView.btitle }</td>
         		</tr>
         		<tr>
         			<th>내용</th>
-        			<td colspan="5">${boardInfo.bcontents }</td>
+        			<td colspan="5">${boardView.bcontents }</td>
         		</tr>
-        		<c:if test="${boardInfo.bfilename != null }">
+        		<c:if test="${boardView.bfilename != null }">
         		<tr>
         			<th>첨부파일</th>
         			<td colspan="5">
         				<!-- 파일 있을 때만 보이도록 조건넣기 -->
-        				<img alt="${boardInfo.bfilename }" width="200px" 
-        					src="${pageContext.request.contextPath }/FileUpload/${boardInfo.bfilename }">
+        				<img alt="${boardView.bfilename }" width="200px" 
+        					src="${pageContext.request.contextPath }/FileUpload/${boardView.bfilename }">
         			</td>
         		</tr>
         		</c:if>
-        		
-        		<c:if test="${sessionScope.loginId == boardInfo.bwriter }">
+        		<!-- 작성자가 쓴 글인지 확인 후 버튼 출력 -->
+        		<c:if test="${sessionScope.loginId == boardView.bwriter }">
 				<tr>
 					<th colspan="6">
-						<button>글 수정</button>
-						<button>글 삭제</button>
+						<input class ="subBtn1" type="button" value="글목록"
+							onclick="location.href='${pageContext.request.contextPath }/Board/boardList'">
+						<input class ="subBtn1" type="button" value="글수정"
+							onclick="location.href='${pageContext.request.contextPath }/Board/boardModiInfo?bno=${boardView.bno }&bwriter=${boardView.bwriter }'">
+						<input class ="subBtn1" type="button" value="글삭제" 
+							onclick="location.href='${pageContext.request.contextPath }/Board/boardDelete?bno=${boardView.bno }&bwriter=${boardView.bwriter }'">
 					</th>
 				</tr>
         		</c:if>
 				
         	</table>
-        
         </div>
     </div>
     
