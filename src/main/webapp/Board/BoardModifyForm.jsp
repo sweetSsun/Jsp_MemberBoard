@@ -7,6 +7,7 @@
 	<title>글수정</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath }/CSS/main.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath }/CSS/joinForm.css">
+    <script	src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"	integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 
 <script type="text/javascript">
@@ -42,7 +43,7 @@
         		</tr>
         		<tr>
         			<th>제목</th>
-        			<td><input type="text" name="btitle" id="title" size="45" value="${boardView.btitle }"></td>
+        			<td><input type="text" name="btitle" id="title" size="45" value="${boardView.btitle }" ></td>
         		</tr>
         		<tr>
         			<th>작성자</th>
@@ -55,12 +56,14 @@
         		<tr>
         			<th>첨부파일</th>
         			<td>
-        				<c:if test="${boardView.bfilename != null}">
-        					<img art="${boardView.bfilename }" width="200px"
+        			<c:if test="${boardView.bfilename != null}">
+        					<img art="${boardView.bfilename }" width="200px" id="orgnImg"
         						src="${pageContext.request.contextPath }/FileUpload/${boardView.bfilename }"> <br>
-        				</c:if>
+        			</c:if>
         				<input type="file" name="bfile" id="changeFileName" size="30" >
-        				<input type="hidden" name="originalBfile" value="${boardView.bfilename }" size="45">
+        				<button type="button" onclick="deleteFile()">첨부파일 삭제</button>
+        				<input type="hidden" name="originalBfile" value="${boardView.bfilename }" id="orgnFile" size="45">
+        				<input type="hidden" name="delOrgnBfile" value="${boardView.bfilename }" id="delOrgnFileName" size="45">
         			</td>
         		</tr>
         		<tr>
@@ -84,6 +87,17 @@
 			$("#title").focus();
 			return false;
 		}
+	}
+	
+	function deleteFile(){
+		console.log("deleteFile() 호출");
+		$("#changeFileName").val("");
+		$("#delOrgnFileName").val("");
+		
+		console.log("changeFileName" + $("#changeFileName").val());
+		console.log("delOrgnFileName : " + $("#delOrgnFileName").val());
+		console.log("orgnFile : " + $("#orgnFile").val());
+		
 	}
 </script>
 </html>

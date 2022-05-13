@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath }/CSS/main.css">
     <link rel="stylesheet"	href="${pageContext.request.contextPath }/CSS/joinForm.css">
 	<script src="https://kit.fontawesome.com/9125416ae4.js" crossorigin="anonymous"></script>
+	<script	src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"	integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	
 </head>
 <script type="text/javascript">
 	// 글 삭제 성공 alert창 띄우기
@@ -33,18 +35,36 @@
         <h2>세션값 확인 : ${sessionScope.loginId }</h2>
         
         <div class="content">
-        	<h3>글목록</h3>
         	<table>
-        		<!-- 검색창 -->
         		<tr>
-        			<th colspan="5">
-        				<input type="text" size="30"> <button>검색</button> 
+        			<th colspan="5">글목록</th>
+        		</tr>
+				<tr>
+					<td colspan="3"></td>
+					<th colspan="2">
         				<c:if test="${sessionScope.loginId != null }">
         					<button onclick="boardWirteForm()">글작성1</button>
         				</c:if>
         				<button onclick="boardWirteForm2('${sessionScope.loginId }')">글작성2</button>
         			</th>
         		</tr>
+        		<tr>
+        			<th colspan="5">
+		        		<!-- 검색창 -->
+		        		<select id="searchType" onchange="console.log(this.value)">
+		        			<option value="btitle">글제목</option>
+		        			<option value="bwriter">작성자</option>
+		        			<option value="bcontents">글내용</option>
+		        		</select>
+        				<input type="text" size="30" id="searchStr" placeholder="검색할 단어">
+        				<button onclick="searchBoard()">검색</button> 
+					</th>
+				</tr>
+        		<c:if test="${param.searchStr != '' and param.searchStr != null }">
+				<tr>
+					<th colspan="5"> [${param.searchStr }] 검색결과입니다. </th>
+				</tr>        		
+        		</c:if>
         		<tr>
         			<th>글번호</th>
         			<th>글제목</th>
@@ -90,6 +110,14 @@
 		} else {
 			location.href="BoardWriteForm.jsp";
 		}
+	}
+	
+	function searchBoard(){
+		var searchStr = $("#searchStr").val();
+		console.log("검색할 단어 : " + searchStr);
+		var searchType = $("#searchType").val();
+		location.href="${pageContext.request.contextPath }/Board/boardSearch?searchStr=" + searchStr + "&searchType=" + searchType ;
+		
 	}
 </script>
 

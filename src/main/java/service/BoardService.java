@@ -78,6 +78,12 @@ public class BoardService {
 		return updateResult;
 	}
 
+	public ArrayList<BoardDto> searchBoard(String searchStr, String searchType) {
+		System.out.println("BoardService.searchBoard() 호출");
+		ArrayList<BoardDto> searchList = bdao.searchBoard(searchStr, searchType);
+		return searchList;
+	}
+
 
 
 }

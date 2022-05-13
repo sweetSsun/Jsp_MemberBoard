@@ -185,19 +185,47 @@ public class BoardController extends HttpServlet {
 			modiBoard.setBno(Integer.parseInt(multi.getParameter("bno")));
 			modiBoard.setBtitle(multi.getParameter("btitle"));
 			modiBoard.setBcontents(multi.getParameter("bcontents"));
-			modiBoard.setBfilename(multi.getFilesystemName( (String)multi.getFileNames().nextElement()) );
+
+			String changeBfilename = multi.getFilesystemName( (String)multi.getFileNames().nextElement());
 			String originalBfilename = multi.getParameter("originalBfile");
+			String delOrgnBfilename = multi.getParameter("delOrgnBfile");
+			System.out.println("changeBfilename : " + changeBfilename);
+			System.out.println("originalBfilename : " + originalBfilename);
+			System.out.println("delOrgnBfilename : " + delOrgnBfilename);
 			
-			if (originalBfilename != null && modiBoard.getBfilename() != null) {
-				// 첨부파일이 있었는데 수정하면서 새로운 파일 첨부
+			// 기존 첨부파일 있었던 것을 삭제
+			if (delOrgnBfilename.length() == 0 && originalBfilename.length() > 0 && changeBfilename == null) {
+				// 기존 첨부파일 삭제
 				File delFile = new File(savePath, originalBfilename);
-				delFile.delete();
-			} else if (originalBfilename != null && modiBoard.getBfilename() == null) {
-				// 첨부파일이 있었고 수정하지 않음
+				delFile.delete();		
+			// 기존 첨부파일 없었고 수정 X
+			} else if  (delOrgnBfilename.length() == 0 && originalBfilename.length() == 0 && changeBfilename == null) {
+				
+				
+			// 기존 첨부파일 있었고 수정 X
+			} else if (originalBfilename != null && changeBfilename == null) {
+				// 기존 첨부파일 이름을 set
 				modiBoard.setBfilename(originalBfilename);
-			} else {
-				// 첨부파일이 없었는데 수정하면서 첨부
+				
+			// 기존 첨부파일 있었고 파일을 수정
+			} else if (originalBfilename != null && changeBfilename != null) {
+				// 기존 첨부파일 삭제 && 새로운 첨부파일 이름 set
+				File delFile = new File(savePath, originalBfilename);
+				delFile.delete();		
+				modiBoard.setBfilename(changeBfilename);
 			}
+
+//			첨부파일 삭제 기능이 없을 때의 조건문
+//			if (originalBfilename != null && modiBoard.getBfilename() != null) {
+//				// 첨부파일이 있었는데 수정하면서 새로운 파일 첨부
+//				File delFile = new File(savePath, originalBfilename);
+//				delFile.delete();
+//			} else if (originalBfilename != null && modiBoard.getBfilename() == null) {
+//				// 첨부파일이 있었고 수정하지 않음
+//				modiBoard.setBfilename(originalBfilename);
+//			} else {
+//				// 첨부파일이 없었는데 수정하면서 첨부
+//			}
 			
 			int updateResult = bsvc.updateBoard(modiBoard);
 			if( updateResult > 0 ) {

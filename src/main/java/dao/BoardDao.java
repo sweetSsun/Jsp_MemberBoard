@@ -157,5 +157,30 @@ public class BoardDao {
 		return updateResult;
 	}
 
+	public ArrayList<BoardDto> searchBoard(String searchStr, String searchType) {
+		String sql = "SELECT * FROM BOARDS WHERE " + searchType + " LIKE '%'||?||'%'";
+		ArrayList<BoardDto> searchList = new ArrayList<BoardDto>();
+		BoardDto searchBoard = null;
+		try {
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, searchStr);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				searchBoard = new BoardDto();
+				searchBoard.setBno(rs.getInt(1));
+				searchBoard.setBwriter(rs.getString(2));
+				searchBoard.setBtitle(rs.getString(3));
+				searchBoard.setBcontents(rs.getString(4));
+				searchBoard.setBdate(rs.getString(5));
+				searchBoard.setBfilename(rs.getString(6));
+				searchBoard.setBhits(rs.getInt(7));
+				searchList.add(searchBoard);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return searchList;
+	}
+
 
 }
