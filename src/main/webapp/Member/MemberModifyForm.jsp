@@ -27,7 +27,7 @@
 		<h2>세션값 확인 : ${sessionScope.loginId }</h2>
 		<div class="content">
 			<!-- 회원가입 양식 시작 -->
-			<form action="memberJoin" method="post" onsubmit="return joinFormCheck()">
+			<form action="memberModify" method="post" onsubmit="return modiFormCheck()">
 				<!-- submit 버튼을 누를 때 true이면 실행, false이면 실행X -->
 				<table>
 					<tr>
@@ -36,40 +36,41 @@
 					<tr>
 						<td><i class="fa-regular fa-address-card"></i></td>
 						<th>아이디</th>
-						<td><input type="text" name="memberId" id="userId"
-							placeholder="3~10자리" onfocusout="checkId()"> <span
-							id="idCheckMsg" class="font10"></span></td>
+						<td><input readonly="readonly" name="memberId" id="userId" value="${memberInfo.mid }"></td>
 					</tr>
 					<tr>
 						<td><i class="fa-regular fa-address-card"></i></td>
 						<th>비밀번호</th>
-						<td><input type="password" name="memberPw" id="userPw"
-							placeholder="4~10자리" onfocusout="checkPw()"> <span
-							id="pwCheckMsg" class="font10"></span></td>
+						<td>
+							<input type="password" name="memberPw" id="userPw" placeholder="4~10자리" onfocusout="checkPw()">
+							<span id="pwCheckMsg" class="font10"></span>
+						</td>
 					</tr>
 					<tr>
 						<td><i class="fa-regular fa-address-card"></i></td>
 						<th>비밀번호 확인</th>
-						<td><input type="password" id="pwConfirm"> <span
-							id="pwConfirmMsg" class="font10"></span></td>
+						<td>
+							<input type="password" id="pwConfirm">
+							<span id="pwConfirmMsg" class="font10"></span>
+						</td>
 					</tr>
 					<tr>
 						<td><i class="fa-regular fa-address-card"></i></td>
 						<th>이름</th>
-						<td><input type="text" name="memberName" id="userName"></td>
+						<td><input type="text" name="memberName" id="userName" value="${memberInfo.mname }"></td>
 						<!-- required : 입력했는지 확인해주는 속성
                         required만 단독으로 써도 되고 required="required" 라고 써도 작동 (속성값이 required 뿐) -->
 					</tr>
 					<tr>
 						<td><i class="fa-regular fa-address-card"></i></td>
 						<th>생년월일</th>
-						<td><input type="date" name="memberBirth" id="userBirth" ></td>
+						<td><input type="date" name="memberBirth" id="userBirth" value="${memberInfo.mbirth }"></td>
 					</tr>
 					<tr>
 						<td><i class="fa-regular fa-address-card"></i></td>
 						<th>이메일</th>
-						<td><input type="text" name="memberEmailId" id="emailId"> 
-							@ <input type="text" name="memberEmailDomain" id="emailDomain" > 
+						<td><input type="text" name="memberEmailId" id="emailId" value="${memberInfo.memailId }"> 
+							@ <input type="text" name="memberEmailDomain" id="emailDomain" value="${memberInfo.memailDomain }"> 
 							<select id="domainSelect">
 								<option value="">직접입력</option>
 								<option value="naver.com">네이버</option>
@@ -82,11 +83,11 @@
 						<td><i class="fa-regular fa-address-card"></i></td>
 						<th>주소</th>
 						<td>
-							<input type="text" id="sample6_postcode" name="memberPostCode" placeholder="우편번호" > 
+							<input type="text" id="sample6_postcode" name="memberPostCode" placeholder="우편번호" value="${memberInfo.memberPostCode }"> 
 							<input type="button" onclick="sample6_execDaumPostcode()" value="우편번호 찾기"><br>
-							<input type="text"	id="sample6_address" name="memberAddress" placeholder="주소"><br>
-							<input type="text"	id="sample6_detailAddress" name="memberDetailAddress"	placeholder="상세주소" >
-							<input type="text" id="sample6_extraAddress" name="memberExtraAddress" placeholder="참고항목">
+							<input type="text"	id="sample6_address" name="memberAddress" placeholder="주소" value="${memberInfo.memberAddress }"><br>
+							<input type="text"	id="sample6_detailAddress" name="memberDetailAddress"	placeholder="상세주소" value="${memberInfo.memberDetailAddress }">
+							<input type="text" id="sample6_extraAddress" name="memberExtraAddress" placeholder="참고항목" value="${memberInfo.memberExtraAddress }">
 						</td>
 					</tr>
 					<tr>
@@ -102,43 +103,8 @@
 	<!-- Footer 끝 -->
 </body>
 <script type="text/javascript">
-	var formIdCheck = false;
 	var formPwCheck = false;
-	// 아이디 규격 확인
-	function checkId(){
-		var inputId = document.getElementById("userId").value;
-		console.log(inputId);
-		if (inputId.length == 0) {
-			document.getElementById("idCheckMsg").innerText = "아이디를 입력해주세요.";
-			document.getElementById("idCheckMsg").style.color = "red";
-			formIdCheck = false;
-		} else if (inputId.length < 3 || inputId.length > 10) {
-			document.getElementById("idCheckMsg").innerText = "3~10자리로 입력해주세요.";
-			document.getElementById("idCheckMsg").style.color = "red";
-			formIdCheck = false;
-		} else {
-			// 아이디 중복 체크
-			$.ajax({
-				type : "get",					 // 어떻게
-				url : "memberIdCheck", 			 // 어디로
-				data : { "inputId" : inputId },  // 무엇을. JSON 형태. 왼: key / 오: value
-//				dataType : 						 // 서버에서 return 받을 데이터의 형태
-				success : function(result){ 	 // 통신이 성공하면 수행할 기능. result : 서버에서 보내준 데이터
-					console.log(result);
-					if(result == "OK"){
-						$("#idCheckMsg").css("color","green").text("사용 가능합니다.")
-						formIdCheck = true;				
-					} else {
-						$("#idCheckMsg").css("color","red").text("중복된 아이디입니다.")
-						formIdCheck = false;				
-					}					
-				},
-				error : function(){				 // 통신이 실패하면 수행할 기능 (없어도 됨)
-					alert("서버 연결실패")
-				}
-			});
-		}
-	}
+
 	// 비밀번호 규격 확인
 	function checkPw(){
 		var inputPw = $("#userPw").val();
@@ -190,14 +156,8 @@
 
 <script type="text/javascript">
 	// 회원가입 폼 확인
-	function joinFormCheck(){
-		console.log("joinFormCheck() 호출");
-		/* 1. 아이디 */
-		if(!formIdCheck) {
-			alert("아이디를 확인해주세요.");
-			$("#userId").focus();
-			return false;
-		}
+	function modiFormCheck(){
+		console.log("modiFormCheck() 호출");
 		/* 2. 비밀번호 */
 		if(!formPwCheck) {
 			alert("비밀번호를 확인해주세요.");

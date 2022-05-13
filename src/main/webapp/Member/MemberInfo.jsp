@@ -54,11 +54,14 @@
         	<tr>
         		<th><i class="fa-regular fa-address-card"></i></th>
         		<th>주소</th>
-        		<td colspan="3">${memberInfo.maddress }</td>
+        		<td colspan="3">
+ 			    	(${memberInfo.memberPostCode }) ${memberInfo.memberAddress }
+ 			    	${memberInfo.memberDetailAddress } ${memberInfo.memberExtraAddress }        		
+        		</td>
         	</tr>
         	<tr>
         		<th colspan="5">
-        			<button class="subBtn1" onclick="modifyForm()">
+        			<button class="subBtn1" onclick="location.href='${pageContext.request.contextPath }/Member/memberModifyForm'">
         			정보수정</button>
         		</th>
         	</tr>
@@ -69,9 +72,4 @@
     <%@ include file="../includes/Footer.jsp" %>    
     <!-- Footer 끝 -->
 </body>
-<script type="text/javascript">
-	function modifyForm(){
-		location.href = "${pageContext.request.contextPath }/Member/memberInfo?afterUrl=MemberInfoModify.jsp";
-	}
-</script>
 </html>

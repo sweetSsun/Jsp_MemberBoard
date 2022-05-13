@@ -18,7 +18,7 @@ import service.MemberService;
  * Servlet implementation class MemberController
  */
 @WebServlet({"/Member/memberIdCheck", "/Member/memberJoin", "/Member/memberLogin", "/Member/memberLogout", 
-			"/Member/memberInfo", ""})
+			"/Member/memberInfo", "/Member/memberModifyForm", "/Member/memberModify"})
 public class MemberController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -66,10 +66,10 @@ public class MemberController extends HttpServlet {
 			String memberName = request.getParameter("memberName");					
 			String memberBirth = request.getParameter("memberBirth");					
 			String memberEmail = request.getParameter("memberEmailId") + "@" + request.getParameter("memberEmailDomain");					
-			String memberAddr = "(" + request.getParameter("memberPostCode") + ") "
-										+ request.getParameter("memberAddress") + " "
-										+ request.getParameter("memberDetailAddress")
-										+ request.getParameter("memberExtraAddress");
+			String memberAddr = request.getParameter("memberPostCode") + "/"
+								+ request.getParameter("memberAddress") + "/"
+								+ request.getParameter("memberDetailAddress") + "/"
+								+ request.getParameter("memberExtraAddress");
 		
 			System.out.println("memberId : " + memberId);
 			System.out.println("memberPw : " + memberPw);
@@ -151,26 +151,19 @@ public class MemberController extends HttpServlet {
 			System.out.println("세션 아이디 : " + session_mid);
 			String param_mid = request.getParameter("mid");
 			System.out.println("파라미터 아이디 : " + param_mid);
-			
-			afterUrl = request.getParameter("afterUrl");
-			System.out.println("afterUrl : " + afterUrl);
-			System.out.println();
-			
+	
 			if (session_mid != null) {
 				MemberDto memberInfo = msvc.getMemberInfo(session_mid);
 				if (memberInfo != null) {
 					request.setAttribute("memberInfo", memberInfo);
-					if (afterUrl == null) {
-						dispatcher = request.getRequestDispatcher("/Member/MemberInfo.jsp");					
-					} else {
-						dispatcher = request.getRequestDispatcher(afterUrl); 								
-					}
+					dispatcher = request.getRequestDispatcher("/Member/MemberInfo.jsp");					
 					dispatcher.forward(request, response);	
 				}
 			} else {
 				response.sendRedirect(contaxtPath + "/Board/Fail.jsp?checkMsg=" +
 									URLEncoder.encode("로그인 후 사용 가능합니다.", "UTF-8"));
 			}
+			break;
 				
 				// 경로 테스트
 //				dispatcher = request.getRequestDispatcher("MainPage.jsp"); // X. 상대경로 :: 파일 [/Member/MainPage.jsp]을(를) 찾을 수 없습니다.
@@ -184,9 +177,51 @@ public class MemberController extends HttpServlet {
 				 * 절대경로의 기준은 현재 프로젝트 경로(contextPath)
 				 * 상대경로의 기준은 호출된 서블릿 맵핑주소
 				 */
-			
-			break;
 	
+		case "/Member/memberModifyForm":
+			System.out.println("정보수정페이지 요청");
+			String mid = (String) session.getAttribute("loginId");
+			System.out.println("로그인 아이디 : " + mid);
+			if ((String)session.getAttribute("loginId") != null) {
+				// 회원정보 조회
+				MemberDto memberModiInfo = msvc.getMemberInfo(mid);
+				request.setAttribute("memberInfo", memberModiInfo);
+				dispatcher = request.getRequestDispatcher("/Member/MemberModifyForm.jsp");
+				dispatcher.forward(request, response);
+			} else {
+				response.sendRedirect(contaxtPath + "/Board/Fail.jsp?checkMsg=" +
+						URLEncoder.encode("로그인 후 사용 가능합니다.", "UTF-8"));
+			}
+			break;
+			
+		case "/Member/memberModify":
+			System.out.println("정보수정 요청");
+			MemberDto modifyInfo = new MemberDto();
+						
+			memberId = request.getParameter("memberId");					
+			memberPw = request.getParameter("memberPw");					
+			memberName = request.getParameter("memberName");					
+			memberBirth = request.getParameter("memberBirth");					
+			memberEmail = request.getParameter("memberEmailId") + "@" + request.getParameter("memberEmailDomain");					
+			memberAddr = request.getParameter("memberPostCode") + "/"
+								+ request.getParameter("memberAddress") + "/"
+								+ request.getParameter("memberDetailAddress") + "/"
+								+ request.getParameter("memberExtraAddress");
+			modifyInfo.setMid(memberId);
+			modifyInfo.setMpw(memberPw);
+			modifyInfo.setMname(memberName);
+			modifyInfo.setMbirth(memberBirth);
+			modifyInfo.setMemail(memberEmail);
+			modifyInfo.setMaddress(memberAddr);
+			
+			int updateResult = msvc.memberModify(modifyInfo);
+			if (updateResult > 0) {
+				response.sendRedirect(contaxtPath + "/Member/memberInfo");
+			} else {
+				response.sendRedirect(contaxtPath + "/Board/Fail.jsp?checkMsg=" 
+									+ URLEncoder.encode("회원정보 수정에 실패했습니다.", "UTF-8"));
+			}			
+			break;
 		}
 	}
 

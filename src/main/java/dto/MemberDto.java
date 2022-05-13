@@ -10,7 +10,45 @@ public class MemberDto {
 	
 	private String memailId;
 	private String memailDomain;
+	
+	private String memberPostCode;
+	private String memberAddress;
+	private String memberDetailAddress;
+	private String memberExtraAddress;
 		
+	
+		public String getMemberPostCode() {
+		return memberPostCode;
+	}
+
+	public void setMemberPostCode(String memberPostCode) {
+		this.memberPostCode = memberPostCode;
+	}
+
+	public String getMemberAddress() {
+		return memberAddress;
+	}
+
+	public void setMemberAddress(String memberAddress) {
+		this.memberAddress = memberAddress;
+	}
+
+	public String getMemberDetailAddress() {
+		return memberDetailAddress;
+	}
+
+	public void setMemberDetailAddress(String memberDetailAddress) {
+		this.memberDetailAddress = memberDetailAddress;
+	}
+
+	public String getMemberExtraAddress() {
+		return memberExtraAddress;
+	}
+
+	public void setMemberExtraAddress(String memberExtraAddress) {
+		this.memberExtraAddress = memberExtraAddress;
+	}
+
 	public String getMemailId() {
 		return memailId;
 	}

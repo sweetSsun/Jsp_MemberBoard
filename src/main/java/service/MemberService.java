@@ -29,6 +29,16 @@ public class MemberService {
 		memberInfo.setMemailId(memailId);
 		memberInfo.setMemailDomain(memailDomain);
 		
+		String maddress = memberInfo.getMaddress();
+		String memberPostCode = maddress.split("/")[0];
+		String memberAddress = maddress.split("/")[1];
+		String memberDetailAddress = maddress.split("/")[2];
+		String memberExtraAddress = maddress.split("/")[3];
+		memberInfo.setMemberPostCode(memberPostCode);
+		memberInfo.setMemberAddress(memberAddress);
+		memberInfo.setMemberDetailAddress(memberDetailAddress);
+		memberInfo.setMemberExtraAddress(memberExtraAddress);
+		
 		System.out.println(memberInfo);
 		return memberInfo;
 	}
@@ -40,6 +50,11 @@ public class MemberService {
 			result = "OK";
 		}
 		return result;
+	}
+	public int memberModify(MemberDto modifyInfo) {
+		System.out.println("MemberService.memberModify() 호출");
+		int updateResult = mdao.updateMember(modifyInfo);
+		return updateResult;
 	}
 
 }

@@ -67,7 +67,7 @@ public class MemberDao {
 	}
 
 	public MemberDto getMemberInfo(String loginedId) {
-		String sql = "SELECT MID, MPW, MNAME, TO_CHAR(MBIRTH, 'YYYY.MM.DD'), MEMAIL, MADDRESS"
+		String sql = "SELECT MID, MPW, MNAME, TO_CHAR(MBIRTH, 'YYYY-MM-DD'), MEMAIL, MADDRESS"
 				+ " FROM MEMBERS WHERE MID=?";
 		MemberDto memberInfo = null;
 		try {
@@ -103,6 +103,24 @@ public class MemberDao {
 			e.printStackTrace();
 		}
 		return checkResult;
+	}
+
+	public int updateMember(MemberDto modifyInfo) {
+		String sql = "UPDATE MEMBERS SET MPW=?, MNAME=?, MBIRTH=TO_DATE(?,'YYYY-MM-DD'), MEMAIL=?, MADDRESS=? WHERE MID=?";
+		int updateResult = 0;		
+		try {
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, modifyInfo.getMpw());
+			pstmt.setString(2, modifyInfo.getMname());
+			pstmt.setString(3, modifyInfo.getMbirth());
+			pstmt.setString(4, modifyInfo.getMemail());
+			pstmt.setString(5, modifyInfo.getMaddress());
+			pstmt.setString(6, modifyInfo.getMid());
+			updateResult = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}			
+		return updateResult;
 	}
 	
 	
