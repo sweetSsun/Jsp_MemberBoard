@@ -18,7 +18,7 @@ import service.MemberService;
  * Servlet implementation class MemberController
  */
 @WebServlet({"/Member/memberIdCheck", "/Member/memberJoin", "/Member/memberLogin", "/Member/memberLogout", 
-			"/Member/memberInfo"})
+			"/Member/memberInfo", ""})
 public class MemberController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -43,6 +43,7 @@ public class MemberController extends HttpServlet {
 		
 		HttpSession session = request.getSession();
 		RequestDispatcher dispatcher;
+		String afterUrl;
 		
 		request.setCharacterEncoding("UTF-8");
 		MemberService msvc = new MemberService();
@@ -98,7 +99,7 @@ public class MemberController extends HttpServlet {
 			System.out.println("로그인 요청");
 			String inputId = request.getParameter("userId");
 			String inputPw = request.getParameter("userPw");
-			String afterUrl = request.getParameter("afterUrl");
+			afterUrl = request.getParameter("afterUrl");
 			System.out.println("입력한 아이디 : " + inputId);
 			System.out.println("입력한 비밀번호 : " + inputPw);
 			System.out.println("로그인 후 URL : " + afterUrl);
@@ -150,12 +151,26 @@ public class MemberController extends HttpServlet {
 			System.out.println("세션 아이디 : " + session_mid);
 			String param_mid = request.getParameter("mid");
 			System.out.println("파라미터 아이디 : " + param_mid);
-
-			MemberDto memberInfo = msvc.getMemberInfo(session_mid);
-			if (memberInfo != null) {
-				request.setAttribute("memberInfo", memberInfo);
-				dispatcher = request.getRequestDispatcher("/Member/MemberInfo.jsp"); // O. 절대경로
-				dispatcher.forward(request, response);							
+			
+			afterUrl = request.getParameter("afterUrl");
+			System.out.println("afterUrl : " + afterUrl);
+			System.out.println();
+			
+			if (session_mid != null) {
+				MemberDto memberInfo = msvc.getMemberInfo(session_mid);
+				if (memberInfo != null) {
+					request.setAttribute("memberInfo", memberInfo);
+					if (afterUrl == null) {
+						dispatcher = request.getRequestDispatcher("/Member/MemberInfo.jsp");					
+					} else {
+						dispatcher = request.getRequestDispatcher(afterUrl); 								
+					}
+					dispatcher.forward(request, response);	
+				}
+			} else {
+				response.sendRedirect(contaxtPath + "/Board/Fail.jsp?checkMsg=" +
+									URLEncoder.encode("로그인 후 사용 가능합니다.", "UTF-8"));
+			}
 				
 				// 경로 테스트
 //				dispatcher = request.getRequestDispatcher("MainPage.jsp"); // X. 상대경로 :: 파일 [/Member/MainPage.jsp]을(를) 찾을 수 없습니다.
@@ -169,7 +184,7 @@ public class MemberController extends HttpServlet {
 				 * 절대경로의 기준은 현재 프로젝트 경로(contextPath)
 				 * 상대경로의 기준은 호출된 서블릿 맵핑주소
 				 */
-			}
+			
 			break;
 	
 		}

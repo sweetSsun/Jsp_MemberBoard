@@ -72,9 +72,54 @@ public class BoardService {
 	}
 
 	// 글 수정
-	public int updateBoard(BoardDto modiBoard) {
+	public int updateBoard(BoardDto modiBoard, String changeBfilename, String originalBfilename, String delOrgnBfilename, String savePath) {
 		System.out.println("BoardService.updateBoard() 호출");
-		int updateResult = bdao.updateBoard(modiBoard);
+		
+//		// 기존 첨부파일 있었던 것을 삭제
+//		if (delOrgnBfilename.length() == 0 && originalBfilename.length() > 0 && changeBfilename == null) {
+//			// 기존 첨부파일 삭제
+//			File delFile = new File(savePath, originalBfilename);
+//			delFile.delete();		
+//			// 기존 첨부파일 없었고 수정 X
+//		} else if  (delOrgnBfilename.length() == 0 && originalBfilename.length() == 0 && changeBfilename == null) {
+//			
+//			// 기존 첨부파일 있었고 수정 X
+//		} else if (originalBfilename != null && changeBfilename == null) {
+//			// 기존 첨부파일 이름을 set
+//			modiBoard.setBfilename(originalBfilename);			
+//			// 기존 첨부파일 있었고 파일을 수정
+//		} else if (originalBfilename != null && changeBfilename != null) {
+//			// 기존 첨부파일 삭제 && 새로운 첨부파일 이름 set
+//			File delFile = new File(savePath, originalBfilename);
+//			delFile.delete();		
+//			modiBoard.setBfilename(changeBfilename);
+//		}
+		
+		
+		// 수정X
+		if (changeBfilename == null) {
+			// 기존 첨부파일 O
+			if (delOrgnBfilename.length() > 0 && originalBfilename.length() > 0) {
+				// 기존 첨부파일 이름을 set
+				modiBoard.setBfilename(originalBfilename);	
+			// 기존 첨부파일 삭제
+			} else if (delOrgnBfilename.length() == 0 && originalBfilename.length() > 0) {
+				modiBoard.setBfilename(changeBfilename);
+				changeBfilename = ""; // 수정없이 첨부파일 삭제하고 싶을 때 null값이 아니도록 하기 위함
+			}
+		// 수정 O
+		} else {
+			modiBoard.setBfilename(changeBfilename);
+		}		
+		
+		int updateResult = bdao.updateBoard(modiBoard);		
+		if (updateResult > 0) { // update 성공 시 기존 파일 삭제
+			// 기존 첨부파일 O && 수정파일
+			if (originalBfilename.length() > 0 && changeBfilename != null) {
+				File delFile = new File(savePath, originalBfilename);
+				delFile.delete();
+			}
+		}
 		return updateResult;
 	}
 

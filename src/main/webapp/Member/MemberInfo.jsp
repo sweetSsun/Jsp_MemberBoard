@@ -22,6 +22,9 @@
         <div class="content">
         <table>
         	<tr>
+        		<th colspan="5">내정보</th>
+        	</tr>
+        	<tr>
         		<th><i class="fa-regular fa-address-card"></i></th>
         		<th>아이디</th>
         		<td colspan="3">${memberInfo.mid }</td>
@@ -33,7 +36,7 @@
         	</tr>
         	<tr>
         		<th><i class="fa-regular fa-address-card"></i></th>
-        		<th>성함</th>
+        		<th>이름</th>
         		<td colspan="3">${memberInfo.mname }</td>
         	</tr>
         	<tr>
@@ -53,6 +56,12 @@
         		<th>주소</th>
         		<td colspan="3">${memberInfo.maddress }</td>
         	</tr>
+        	<tr>
+        		<th colspan="5">
+        			<button class="subBtn1" onclick="modifyForm()">
+        			정보수정</button>
+        		</th>
+        	</tr>
         </table>
   		</div>
     </div>
@@ -60,4 +69,9 @@
     <%@ include file="../includes/Footer.jsp" %>    
     <!-- Footer 끝 -->
 </body>
+<script type="text/javascript">
+	function modifyForm(){
+		location.href = "${pageContext.request.contextPath }/Member/memberInfo?afterUrl=MemberInfoModify.jsp";
+	}
+</script>
 </html>

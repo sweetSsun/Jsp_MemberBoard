@@ -23,7 +23,8 @@ import service.BoardService;
  * Servlet implementation class BoardController
  */
 @WebServlet({"/Board/boardWrite", "/Board/boardList", "/Board/boardView",
-			"/Board/boardModiInfo", "/Board/boardModify", "/Board/boardDelete"})
+			"/Board/boardModiInfo", "/Board/boardModify", "/Board/boardDelete",
+			"/Board/boardSearch"})
 public class BoardController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -193,41 +194,20 @@ public class BoardController extends HttpServlet {
 			System.out.println("originalBfilename : " + originalBfilename);
 			System.out.println("delOrgnBfilename : " + delOrgnBfilename);
 			
-			// 기존 첨부파일 있었던 것을 삭제
-			if (delOrgnBfilename.length() == 0 && originalBfilename.length() > 0 && changeBfilename == null) {
-				// 기존 첨부파일 삭제
-				File delFile = new File(savePath, originalBfilename);
-				delFile.delete();		
-			// 기존 첨부파일 없었고 수정 X
-			} else if  (delOrgnBfilename.length() == 0 && originalBfilename.length() == 0 && changeBfilename == null) {
-				
-				
-			// 기존 첨부파일 있었고 수정 X
-			} else if (originalBfilename != null && changeBfilename == null) {
-				// 기존 첨부파일 이름을 set
-				modiBoard.setBfilename(originalBfilename);
-				
-			// 기존 첨부파일 있었고 파일을 수정
-			} else if (originalBfilename != null && changeBfilename != null) {
-				// 기존 첨부파일 삭제 && 새로운 첨부파일 이름 set
-				File delFile = new File(savePath, originalBfilename);
-				delFile.delete();		
-				modiBoard.setBfilename(changeBfilename);
-			}
-
 //			첨부파일 삭제 기능이 없을 때의 조건문
-//			if (originalBfilename != null && modiBoard.getBfilename() != null) {
+//			modiBoard.setBfilename(changeBfilename);
+//			if (originalBfilename != null && changeBfilename != null) {
 //				// 첨부파일이 있었는데 수정하면서 새로운 파일 첨부
 //				File delFile = new File(savePath, originalBfilename);
 //				delFile.delete();
-//			} else if (originalBfilename != null && modiBoard.getBfilename() == null) {
+//			} else if (originalBfilename != null && changeBfilename == null) {
 //				// 첨부파일이 있었고 수정하지 않음
 //				modiBoard.setBfilename(originalBfilename);
 //			} else {
 //				// 첨부파일이 없었는데 수정하면서 첨부
 //			}
 			
-			int updateResult = bsvc.updateBoard(modiBoard);
+			int updateResult = bsvc.updateBoard(modiBoard, changeBfilename, originalBfilename, delOrgnBfilename, savePath);
 			if( updateResult > 0 ) {
 				// 글 수정 성공
 				response.sendRedirect(contextPath + "/Board/boardView?bno=" + modiBoard.getBno());
@@ -237,6 +217,15 @@ public class BoardController extends HttpServlet {
 				response.sendRedirect(contextPath + "/Board/Fail.jsp?checkMsg="
 									+ URLEncoder.encode(modiFailkMsg, "UTF-8"));
 			}
+			break;			
+		
+		case "/Board/boardSearch":
+			String searchText = request.getParameter("searchText");
+			String searchType = request.getParameter("searchType");
+			ArrayList<BoardDto> searchList = bsvc.searchBoard(searchText, searchType);
+			request.setAttribute("boardList", searchList);
+			dispatcher = request.getRequestDispatcher("/Board/BoardList.jsp");
+			dispatcher.forward(request, response);
 			break;
 		}
 	}

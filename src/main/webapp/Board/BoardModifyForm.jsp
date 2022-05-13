@@ -93,11 +93,11 @@
 		console.log("deleteFile() 호출");
 		$("#changeFileName").val("");
 		$("#delOrgnFileName").val("");
+		$("#orgnImg").attr("src","");
 		
 		console.log("changeFileName" + $("#changeFileName").val());
 		console.log("delOrgnFileName : " + $("#delOrgnFileName").val());
 		console.log("orgnFile : " + $("#orgnFile").val());
-		
-	}
+	}	
 </script>
 </html>

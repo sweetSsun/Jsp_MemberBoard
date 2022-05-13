@@ -56,13 +56,13 @@
 		        			<option value="bwriter">작성자</option>
 		        			<option value="bcontents">글내용</option>
 		        		</select>
-        				<input type="text" size="30" id="searchStr" placeholder="검색할 단어">
+        				<input type="text" size="30" id="searchText" placeholder="검색할 단어">
         				<button onclick="searchBoard()">검색</button> 
 					</th>
 				</tr>
-        		<c:if test="${param.searchStr != '' and param.searchStr != null }">
+        		<c:if test="${param.searchText != '' and param.searchText != null }">
 				<tr>
-					<th colspan="5"> [${param.searchStr }] 검색결과입니다. </th>
+					<th colspan="5"> [${param.searchText }] 검색결과입니다. </th>
 				</tr>        		
         		</c:if>
         		<tr>
@@ -113,10 +113,10 @@
 	}
 	
 	function searchBoard(){
-		var searchStr = $("#searchStr").val();
-		console.log("검색할 단어 : " + searchStr);
+		var searchText = $("#searchText").val();
+		console.log("검색할 단어 : " + searchText);
 		var searchType = $("#searchType").val();
-		location.href="${pageContext.request.contextPath }/Board/boardSearch?searchStr=" + searchStr + "&searchType=" + searchType ;
+		location.href="${pageContext.request.contextPath }/Board/boardSearch?searchText=" + searchText + "&searchType=" + searchType ;
 		
 	}
 </script>

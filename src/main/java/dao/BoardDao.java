@@ -158,7 +158,7 @@ public class BoardDao {
 	}
 
 	public ArrayList<BoardDto> searchBoard(String searchStr, String searchType) {
-		String sql = "SELECT * FROM BOARDS WHERE " + searchType + " LIKE '%'||?||'%'";
+		String sql = "SELECT * FROM BOARDS WHERE " + searchType + " LIKE '%'||?||'%' AND BSTATE=0";
 		ArrayList<BoardDto> searchList = new ArrayList<BoardDto>();
 		BoardDto searchBoard = null;
 		try {
