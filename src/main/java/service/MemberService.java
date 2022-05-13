@@ -30,14 +30,11 @@ public class MemberService {
 		memberInfo.setMemailDomain(memailDomain);
 		
 		String maddress = memberInfo.getMaddress();
-		String memberPostCode = maddress.split("/")[0];
-		String memberAddress = maddress.split("/")[1];
-		String memberDetailAddress = maddress.split("/")[2];
-		String memberExtraAddress = maddress.split("/")[3];
-		memberInfo.setMemberPostCode(memberPostCode);
-		memberInfo.setMemberAddress(memberAddress);
-		memberInfo.setMemberDetailAddress(memberDetailAddress);
-		memberInfo.setMemberExtraAddress(memberExtraAddress);
+		String[] maddress_split = maddress.split("/");
+		memberInfo.setMemberPostCode(maddress_split[0]);
+		memberInfo.setMemberAddress(maddress_split[1]);
+		memberInfo.setMemberDetailAddress(maddress_split[2]);
+		memberInfo.setMemberExtraAddress(maddress_split[3]);
 		
 		System.out.println(memberInfo);
 		return memberInfo;

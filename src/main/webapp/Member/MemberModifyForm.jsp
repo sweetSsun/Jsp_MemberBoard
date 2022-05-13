@@ -42,16 +42,9 @@
 						<td><i class="fa-regular fa-address-card"></i></td>
 						<th>비밀번호</th>
 						<td>
-							<input type="password" name="memberPw" id="userPw" placeholder="4~10자리" onfocusout="checkPw()">
+							<input type="password" name="memberPw" id="userPw" value="${memberInfo.mpw }">
+							<button type="button" onclick="pwView()">비밀번호보이기</button>
 							<span id="pwCheckMsg" class="font10"></span>
-						</td>
-					</tr>
-					<tr>
-						<td><i class="fa-regular fa-address-card"></i></td>
-						<th>비밀번호 확인</th>
-						<td>
-							<input type="password" id="pwConfirm">
-							<span id="pwConfirmMsg" class="font10"></span>
 						</td>
 					</tr>
 					<tr>
@@ -103,63 +96,29 @@
 	<!-- Footer 끝 -->
 </body>
 <script type="text/javascript">
-	var formPwCheck = false;
-
-	// 비밀번호 규격 확인
-	function checkPw(){
-		var inputPw = $("#userPw").val();
-		console.log(inputPw);
-		if (inputPw.length == 0) {
-			$("#pwCheckMsg").css("color","red").text("비밀번호를 입력해주세요.");
-			formPwCheck = false;
-		} else if (inputPw.length < 4 || inputPw.length > 10) {
-			$("#pwCheckMsg").css("color","red").text("4~10자리로 입력해주세요.");
-			formPwCheck = false;
-		} else {
-			$("#pwCheckMsg").css("color","green").text("사용 가능합니다.");
-		}
-	}
-	
-	$(document).ready( function() {
-		// 비밀번호 일치 확인
-		$("#pwConfirm").focusout(function() {
-			var pwConfirm = $("#pwConfirm").val();
-			var inputPw = $("#userPw").val();
-			console.log(pwConfirm);
-			if (pwConfirm != inputPw) {
-				$("#pwConfirmMsg").css("color","red").text("불일치");
-				formPwCheck = false;
-			} else {
-				$("#pwConfirmMsg").css("color","green").text("일치");
-				if (inputPw.length < 4 || inputPw.length > 10) {
-					formPwCheck = false;					
-				} else {
-					formPwCheck = true;
-				}
-			}		
-		});
-		
+	$(document).ready( function() {	
 		// 이메일도메인 value 변경
 		$("#domainSelect").change(function() {
 			var selDomain = $("#domainSelect").val();
 			$("#emailDomain").val(selDomain);
 		});
+		
 	});
 	
-/* 	function domainChange(){
-		var domain =  document.getElementById("domainSelect").value;
-		console.log(domain);
-		document.getElementById("emailDomain").value = domain;
-	} */
+	function pwView(){
+		if ($("#userPw").attr("type") == "text"){
+			$("#userPw").attr("type","password");			
+		} else {
+			$("#userPw").attr("type","text");			
+		}
+	}
 	
-</script>
-
-<script type="text/javascript">
 	// 회원가입 폼 확인
 	function modiFormCheck(){
 		console.log("modiFormCheck() 호출");
 		/* 2. 비밀번호 */
-		if(!formPwCheck) {
+		var userPw = $("#userPw").val();
+		if (userPw.length < 4 || userPw.length > 10) {
 			alert("비밀번호를 확인해주세요.");
 			$("#userPw").focus();
 			return false;

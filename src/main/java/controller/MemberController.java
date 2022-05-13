@@ -180,11 +180,11 @@ public class MemberController extends HttpServlet {
 	
 		case "/Member/memberModifyForm":
 			System.out.println("정보수정페이지 요청");
-			String mid = (String) session.getAttribute("loginId");
-			System.out.println("로그인 아이디 : " + mid);
-			if ((String)session.getAttribute("loginId") != null) {
+			String loginid = (String) session.getAttribute("loginId");
+			System.out.println("로그인 아이디 : " + loginid);
+			if (loginid != null) {
 				// 회원정보 조회
-				MemberDto memberModiInfo = msvc.getMemberInfo(mid);
+				MemberDto memberModiInfo = msvc.getMemberInfo(loginid);
 				request.setAttribute("memberInfo", memberModiInfo);
 				dispatcher = request.getRequestDispatcher("/Member/MemberModifyForm.jsp");
 				dispatcher.forward(request, response);
