@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import dto.BoardDto;
+import dto.ReplyDto;
 
 public class BoardDao {
 	Connection con;
@@ -180,6 +181,64 @@ public class BoardDao {
 			e.printStackTrace();
 		}
 		return searchList;
+	}
+	
+	public int getMaxRenum() {
+		String sql = "SELECT NVL(MAX(RENUM), 0) FROM BOARDREPLY";
+		int maxRenum = 0;
+		try {
+			pstmt = con.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				maxRenum = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}		
+		return maxRenum;
+	}
+
+	public int insertBoardReply(ReplyDto reply) {
+		String sql = "INSERT INTO BOARDREPLY(RENUM, REBNO, REWRITER, REDATE, RECONTENTS, RESTATE)"
+				+ " VALUES (?,?,?,SYSDATE,?,?)";
+		int insertResult = 0;
+		try {
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, reply.getRenum());
+			pstmt.setInt(2, reply.getRebno());
+			pstmt.setString(3, reply.getRewriter());
+			pstmt.setString(4, reply.getRecontents());
+			pstmt.setInt(5, reply.getRestate());
+			insertResult = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return insertResult;
+	}
+
+	public ArrayList<ReplyDto> getReplyList(int bno) {
+		String sql = "SELECT RENUM,REBNO,REWRITER,REDATE,RECONTENTS,RESTATE"
+					+ " FROM BOARDREPLY WHERE REBNO=?";
+		ArrayList<ReplyDto> replyList = new ArrayList<ReplyDto>();
+		ReplyDto reply = null;
+		try {
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, bno);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				reply = new ReplyDto();
+				reply.setRenum(rs.getInt(1));
+				reply.setRebno(rs.getInt(2));
+				reply.setRewriter(rs.getString(3));
+				reply.setRedate(rs.getString(4));
+				reply.setRecontents(rs.getString(5));
+				reply.setRestate(rs.getInt(6));
+				replyList.add(reply);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}		
+		return replyList;		
 	}
 
 

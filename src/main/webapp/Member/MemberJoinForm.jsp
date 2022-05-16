@@ -26,13 +26,11 @@
 		<h2>MemberJoinForm.jsp - 컨텐츠 영역</h2>
 		<h2>세션값 확인 : ${sessionScope.loginId }</h2>
 		<div class="content">
+			<h2>회원가입</h2>
 			<!-- 회원가입 양식 시작 -->
 			<form action="memberJoin" method="post" onsubmit="return joinFormCheck()">
 				<!-- submit 버튼을 누를 때 true이면 실행, false이면 실행X -->
 				<table>
-					<tr>
-						<th colspan="3">회원가입</th>
-					</tr>
 					<tr>
 						<td><i class="fa-regular fa-address-card"></i></td>
 						<th>아이디</th>

@@ -35,11 +35,9 @@
         <h2>세션값 확인 : ${sessionScope.loginId }</h2>
         
         <div class="content">
+        	<h2>글목록</h2>
         	<table>
-        		<tr>
-        			<th colspan="5">글목록</th>
-        		</tr>
-				<tr>
+ㅋ`				<tr>
 					<td colspan="3"></td>
 					<th colspan="2">
         				<c:if test="${sessionScope.loginId != null }">

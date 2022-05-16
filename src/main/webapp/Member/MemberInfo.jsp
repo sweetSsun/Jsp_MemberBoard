@@ -20,10 +20,8 @@
         <h2>MemberInfo.jsp - 컨텐츠 영역</h2>
         <h2>세션값 확인 : ${sessionScope.loginId }</h2>
         <div class="content">
+        <h2>내정보</h2>
         <table>
-        	<tr>
-        		<th colspan="5">내정보</th>
-        	</tr>
         	<tr>
         		<th><i class="fa-regular fa-address-card"></i></th>
         		<th>아이디</th>

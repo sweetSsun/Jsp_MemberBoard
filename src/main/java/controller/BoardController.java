@@ -17,6 +17,7 @@ import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
 import dto.BoardDto;
+import dto.ReplyDto;
 import service.BoardService;
 
 /**
@@ -24,7 +25,7 @@ import service.BoardService;
  */
 @WebServlet({"/Board/boardWrite", "/Board/boardList", "/Board/boardView",
 			"/Board/boardModiInfo", "/Board/boardModify", "/Board/boardDelete",
-			"/Board/boardSearch"})
+			"/Board/boardSearch", "/Board/replyWrite"})
 public class BoardController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -144,11 +145,16 @@ public class BoardController extends HttpServlet {
 		case "/Board/boardView":
 			System.out.println("글정보 요청");
 			int bno = Integer.parseInt(request.getParameter("bno"));		
-			// 글 상세 조회
+			// 글내용 상세 조회
 			BoardDto boardView = bsvc.getBoardView(bno, true);
-		
-			
 			request.setAttribute("boardView", boardView);
+			
+			// 댓글목록 조회
+			ArrayList<ReplyDto> replyList = bsvc.getReplyList(bno);
+			System.out.println("bno : " + bno);
+			request.setAttribute("replyList", replyList);
+			System.out.println("댓글목록 : " + replyList);
+			
 			dispatcher = request.getRequestDispatcher("BoardView.jsp");
 			dispatcher.forward(request, response);
 			break;
@@ -220,12 +226,38 @@ public class BoardController extends HttpServlet {
 			break;			
 		
 		case "/Board/boardSearch":
+			System.out.println("글목록 검색 요청");
 			String searchText = request.getParameter("searchText");
 			String searchType = request.getParameter("searchType");
 			ArrayList<BoardDto> searchList = bsvc.searchBoard(searchText, searchType);
 			request.setAttribute("boardList", searchList);
 			dispatcher = request.getRequestDispatcher("/Board/BoardList.jsp");
 			dispatcher.forward(request, response);
+			break;
+			
+		case "/Board/replyWrite":
+			System.out.println("댓글 작성 요청");
+			int rebno = Integer.parseInt( request.getParameter("rebno") );
+			String rewriter = request.getParameter("rewriter");
+			String recontents = request.getParameter("recontents");
+			int restate = Integer.parseInt( request.getParameter("restate") );
+			
+			ReplyDto reply = new ReplyDto();
+			reply.setRebno(rebno);
+			reply.setRewriter(rewriter);
+			reply.setRecontents(recontents);
+			reply.setRestate(restate);
+			System.out.println(reply);
+			
+			insertResult = bsvc.replyWrite(reply);
+			if (insertResult > 0) {
+				response.sendRedirect(contextPath + "/Board/boardView?bno=" + rebno);
+			} else {
+				String FailkMsg = rebno + "번 글 댓글 작성에 실패했습니다.";
+				response.sendRedirect(contextPath + "/Board/Fail.jsp?checkMsg="
+									+ URLEncoder.encode(FailkMsg, "UTF-8"));
+			}
+			
 			break;
 		}
 	}

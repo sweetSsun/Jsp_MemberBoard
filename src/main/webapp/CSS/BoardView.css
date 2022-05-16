@@ -17,6 +17,7 @@ td {
 }
 
 table {
+	width: 100%;
     margin-left: auto;
     margin-right: auto;
 }
@@ -27,18 +28,11 @@ input {
     margin: 5px;
 }
 
-textarea, textarea:focus {
-	outline: none;
-	border: 2px solid goldenrod;
-}
-
 .subBtn1 {
-	font-weight: bold;
-    font-size: large;
+	font: bold;
     background-color: white;
     border: 3px solid slategray;
     padding: 5px 10px;
-    border-radius: 7px;
 }
 
 .subBtn1:hover {
@@ -49,4 +43,24 @@ textarea, textarea:focus {
 
 .font10 {
     font-size: 13px;
+}
+
+.content{
+	margin-top: 3px;	
+}
+
+.replyList, .replyForm {
+	border: 0px;	
+	max-width: 700px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.replyContent{
+	border-bottom: 1px solid black;
+}
+
+.replyForm textarea{
+	width: 100%;
+	border-radius: 7px;
 }

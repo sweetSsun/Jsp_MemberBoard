@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import dao.BoardDao;
 import dto.BoardDto;
+import dto.ReplyDto;
 
 public class BoardService {
 
@@ -128,6 +129,37 @@ public class BoardService {
 		ArrayList<BoardDto> searchList = bdao.searchBoard(searchStr, searchType);
 		return searchList;
 	}
+
+	// 댓글 작성
+	public int replyWrite(ReplyDto reply) {
+		System.out.println("BoardService.replyWrite() 호출");
+		// 댓글 번호 조회
+		int maxRenum = bdao.getMaxRenum();
+		int renum = maxRenum + 1;
+		System.out.println("댓글 번호 : " + renum);
+		reply.setRenum(renum);
+		
+		int insertResult = bdao.insertBoardReply(reply);
+		
+		return insertResult;
+	}
+
+	// 댓글 목록 조회
+	public ArrayList<ReplyDto> getReplyList(int bno) {
+		System.out.println("BoardService.getReplyList() 호출");
+		ArrayList<ReplyDto> replyList = bdao.getReplyList(bno);
+		// 개행문자 변환
+		for(int i = 0; replyList.size() < i; i++) {
+			String recontents = replyList.get(i).getRecontents();
+			recontents = recontents.replaceAll(" ", "&nbsp;");
+			recontents = recontents.replaceAll("\r\n", "<br>");
+			replyList.get(i).setRecontents(recontents);
+			System.out.println("개행문자 변환 후 : " + replyList.get(i).getRecontents());			
+		}
+		return replyList;
+	}
+	
+	
 
 
 

@@ -31,12 +31,10 @@
         <h2>세션값 확인 : ${sessionScope.loginId }</h2>
         
         <div class="content">
+        <h2>글 수정</h2>
         <form action="boardModify" method="post" onsubmit="return checkTitle()" enctype="multipart/form-data">
         	<%-- <input type="hidden" name="bwriter" value="${sessionScope.loginId }"> --%>
         	<table>
-        		<tr>
-        			<th colspan="2">글 수정</th>
-        		</tr>
         		<tr>
         			<th>글 번호</th>
 	        		<td><input readonly="readonly" name="bno" value="${boardView.bno }" size="45" ></td>
