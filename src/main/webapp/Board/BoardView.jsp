@@ -88,7 +88,9 @@
 					
 						<c:when test="${reply.restate == 1 }"> <%-- 비공개댓글일 때 --%>
 							<c:choose>
-								<c:when test="${reply.rewriter == sessionScope.loginId or boardView.bwriter == sessionScope.loginId}">
+								<%-- 댓글 작성자 or 원글 작성자일 때 --%>
+								<c:when test="${reply.rewriter == sessionScope.loginId
+											 or boardView.bwriter == sessionScope.loginId}">
 									<tr>
 										<td style="text-align:left;">
 						 				<span class="rewriterSpan">${reply.rewriter }</span>
@@ -96,7 +98,7 @@
 									 	</td>	
 									 	<td style="text-align:right;">
 						 					<c:if test="${reply.rewriter == sessionScope.loginId }">
-											<button>수정</button>
+											<button onclick="modifyReplyAjax(${reply.renum })">수정</button>
 											<button>삭제</button>
 								 			</c:if>
 										</td>				
@@ -106,6 +108,7 @@
 										[비공개 댓글] <br> ${reply.recontents }</td>
 									</tr>
 								</c:when>
+								<%-- 제 3자일 때 --%>
 								<c:otherwise> 
 									<tr>
 										<td class="replyContent" colspan="2">비공개 댓글입니다.</td>
@@ -120,7 +123,7 @@
 									${reply.redate }</td>
 								<td style="text-align: right;"><c:if
 										test="${reply.rewriter == sessionScope.loginId }">
-										<button>수정</button>
+										<button onclick="modifyReplyAjax(${reply.renum })">수정</button>
 										<button>삭제</button>
 									</c:if></td>
 							</tr>
@@ -144,17 +147,18 @@
 			<table>
 				<tr>
 					<td>
-						<input type="radio" name="restate" value="0" checked="checked">전체공개
-						<input type="radio" name="restate" value="1">비공개
+						<input type="radio" name="restate" id="restate" value="0" checked="checked">전체공개
+						<input type="radio" name="restate" id="restate" value="1">비공개
 						<br>
-						<input type="hidden" name="rebno" value="${boardView.bno }">
-						<input type="hidden" name="rewriter" value="${sessionScope.loginId }">
-						<textarea rows="2" name="recontents" placeholder="댓글내용 작성..."></textarea>
+						<input type="hidden" name="rebno" id="rebno" value="${boardView.bno }">
+						<input type="hidden" name="rewriter" id="rewriter" value="${sessionScope.loginId }">
+						<textarea rows="2" name="recontents" id="recontents" placeholder="댓글내용 작성..."></textarea>
 					</td>
 				</tr>
 				<tr>
 					<th>
 						<input class="subBtn1" style="font-size:medium" type="submit" value="댓글작성">
+						<input class="subBtn1" style="font-size:medium" type="button" id="ajaxReply" value="ajax댓글">
 					</th>
 				</tr>
 			</table>
@@ -170,9 +174,54 @@
     <!-- Footer 끝 -->
 </body>
 <script type="text/javascript">
-	function replyModify(renum){
+	
+	function modifyReplyAjax(renum){
+		console.log(renum);
+		console.log(typeof renum);
 		
 	}
+
+
+	$(document).ready(function() {
+		
+		/* 댓글 불러오기 (refresh)
+		$.ajax({
+			type : "post",
+			url : "replyList",
+			data : {"rebno", $("#rebno").val()},
+			success : function(result){
+				var comments = "";
+				if (result.length == 0) {
+					comments = "등록된 댓글이 없습니다.";
+				} else {
+					comments += "포기"
+				}
+			}
+		})
+		*/
+		
+		$("#ajaxReply").click(function() {
+			var restate = $("#restate").val();
+			var rebno = $("#rebno").val();
+			var rewriter = $("#rewriter").val();
+			var recontents = $("#recontents").val();
+			$.ajax({
+				type : "post",
+				url : "replyAjax",
+				data : {"restate" : restate, "rebno" : rebno, "rewriter" : rewriter, "recontents" : recontents },
+				success : function(result){
+					if (result == "OK") {
+						console.log("댓글 작성 성공");					
+					} else {
+						console.log("댓글 작성 실패");
+					}
+				}
+			});
+			
+		})
+		
+	});
+		
 </script>
 
 </html>

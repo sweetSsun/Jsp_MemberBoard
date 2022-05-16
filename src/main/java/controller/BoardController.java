@@ -25,7 +25,7 @@ import service.BoardService;
  */
 @WebServlet({"/Board/boardWrite", "/Board/boardList", "/Board/boardView",
 			"/Board/boardModiInfo", "/Board/boardModify", "/Board/boardDelete",
-			"/Board/boardSearch", "/Board/replyWrite"})
+			"/Board/boardSearch", "/Board/replyWrite", "/Board/replyAjax"})
 public class BoardController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -257,6 +257,26 @@ public class BoardController extends HttpServlet {
 									+ URLEncoder.encode(FailkMsg, "UTF-8"));
 			}
 			
+			break;
+			
+		case "/Board/replyAjax":
+			System.out.println("ajax로 댓글 작성 요청");
+			rebno = Integer.parseInt(request.getParameter("rebno"));
+			restate = Integer.parseInt(request.getParameter("restate"));
+			rewriter = request.getParameter("rewriter");
+			recontents = request.getParameter("recontents");
+			reply = new ReplyDto();
+			reply.setRebno(rebno);
+			reply.setRewriter(rewriter);
+			reply.setRecontents(recontents);
+			reply.setRestate(restate);
+			
+			insertResult = bsvc.replyWrite(reply);
+			System.out.println(insertResult);
+			if (insertResult > 0) {
+				String result = "OK";
+				response.getWriter().append(result);
+			}
 			break;
 		}
 	}
