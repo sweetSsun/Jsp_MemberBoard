@@ -218,7 +218,7 @@ public class BoardDao {
 
 	public ArrayList<ReplyDto> getReplyList(int bno) {
 		String sql = "SELECT RENUM,REBNO,REWRITER,REDATE,RECONTENTS,RESTATE"
-					+ " FROM BOARDREPLY WHERE REBNO=?";
+					+ " FROM BOARDREPLY WHERE REBNO=? ORDER BY RENUM";
 		ArrayList<ReplyDto> replyList = new ArrayList<ReplyDto>();
 		ReplyDto reply = null;
 		try {
@@ -234,6 +234,7 @@ public class BoardDao {
 				reply.setRecontents(rs.getString(5));
 				reply.setRestate(rs.getInt(6));
 				replyList.add(reply);
+				System.out.println("댓글정보 조회 : " + reply);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

@@ -29,7 +29,7 @@ input {
 
 textarea, textarea:focus {
 	outline: none;
-	border: 2px solid goldenrod;
+	border: 2px solid rgb(240, 196, 85);
 }
 
 .subBtn1 {

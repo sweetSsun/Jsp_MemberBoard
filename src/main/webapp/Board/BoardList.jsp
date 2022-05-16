@@ -37,14 +37,13 @@
         <div class="content">
         	<h2>글목록</h2>
         	<table>
-ㅋ`				<tr>
-					<td colspan="3"></td>
-					<th colspan="2">
+				<tr>
+					<td colspan="5" style="text-align:right;">
         				<c:if test="${sessionScope.loginId != null }">
         					<button onclick="boardWirteForm()">글작성1</button>
         				</c:if>
         				<button onclick="boardWirteForm2('${sessionScope.loginId }')">글작성2</button>
-        			</th>
+        			</td>
         		</tr>
         		<tr>
         			<th colspan="5">
@@ -68,6 +67,7 @@
         			<th>글제목</th>
         			<th>작성자</th>
         			<th>작성일</th>
+        			<th>댓글수</th>
         			<th>조회수</th>
         		</tr>
         		
@@ -82,6 +82,7 @@
         			</td>
         			<td>${board.bwriter }</td>
         			<td>${board.bdate }</td>
+        			<td>${board.recount }</td>
         			<td>${board.bhits }</td>
         		</tr>        		
         		</c:forEach>

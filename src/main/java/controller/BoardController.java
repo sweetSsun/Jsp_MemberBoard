@@ -151,9 +151,8 @@ public class BoardController extends HttpServlet {
 			
 			// 댓글목록 조회
 			ArrayList<ReplyDto> replyList = bsvc.getReplyList(bno);
-			System.out.println("bno : " + bno);
 			request.setAttribute("replyList", replyList);
-			System.out.println("댓글목록 : " + replyList);
+			System.out.println("bno : " + bno);
 			
 			dispatcher = request.getRequestDispatcher("BoardView.jsp");
 			dispatcher.forward(request, response);

@@ -37,6 +37,14 @@ public class BoardService {
 	public ArrayList<BoardDto> getBoardList() {
 		System.out.println("BoardService.getBoardList() 호출");
 		ArrayList<BoardDto> boardList = bdao.getBoardList();		
+		
+		// 댓글수 조회
+		for (int i = 0; boardList.size() > i; i++) {
+			int bno = boardList.get(i).getBno();
+			ArrayList<ReplyDto>replyList = getReplyList(bno);
+			int recount = replyList.size();
+			boardList.get(i).setRecount(recount);			
+		}
 		return boardList;
 	}
 

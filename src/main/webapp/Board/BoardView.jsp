@@ -80,37 +80,58 @@
 			<h2>댓글목록</h2>
 			<!-- 1. controller에서 상세보기할 때 함께 조회
 			 	댓글작성 버튼 클릭 후 boardView가 다시 진행되기 때문에 조회수가 +1됨 -->
-			<!-- 1. ajax 사용하여 댓글목록 조회 
+			<!-- 2. ajax 사용하여 댓글목록 조회 
 				댓글작성 버튼 클릭 후 댓글목록 부분만 새롭게 받아옴-->
 			<table>
-			<c:forEach items="${replyList }" var="reply" >
-			<c:choose>
-				<c:when test="${reply.rewriter == sessionScope.loginId || boardView.bwriter == sessionScope.loginId }">
-				<tr>
-					<td style="font-weight:bold; text-align:left;">${reply.rewriter }</td>
-					<td style="text-align:right;">${reply.redate }</td>					
-				</tr>
-				<tr>
-					<td class="replyContent">${reply.recontents }</td>
-					<td style="text-align:right;">
-						<button>수정</button>
-						<button>삭제</button>
-					</td>
-				</tr>
-				</c:when>
-				<c:otherwise>
-					<c:if test="${reply.restate == 0 }">
-					<tr>
-						<td style="font-weight:bold; text-align:left;">${reply.rewriter }</td>
-						<td>${reply.redate }</td>					
-					</tr>
-					<tr>
-						<td colspan="2" class="replyContent">${reply.recontents }</td>
-					</tr>
-					</c:if>
-				</c:otherwise>
-			</c:choose>
-			</c:forEach>
+				<c:forEach items="${replyList }" var="reply">
+					<c:choose>
+					
+						<c:when test="${reply.restate == 1 }"> <%-- 비공개댓글일 때 --%>
+							<c:choose>
+								<c:when test="${reply.rewriter == sessionScope.loginId or boardView.bwriter == sessionScope.loginId}">
+									<tr>
+										<td style="text-align:left;">
+						 				<span class="rewriterSpan">${reply.rewriter }</span>
+						 				${reply.redate }
+									 	</td>	
+									 	<td style="text-align:right;">
+						 					<c:if test="${reply.rewriter == sessionScope.loginId }">
+											<button>수정</button>
+											<button>삭제</button>
+								 			</c:if>
+										</td>				
+									</tr>
+									<tr>
+										<td class="replyContent" colspan="2">
+										[비공개 댓글] <br> ${reply.recontents }</td>
+									</tr>
+								</c:when>
+								<c:otherwise> 
+									<tr>
+										<td class="replyContent" colspan="2">비공개 댓글입니다.</td>
+									</tr>
+								</c:otherwise>
+							</c:choose>
+						</c:when>
+
+						<c:otherwise> <%-- 공개댓글일 때 --%>
+							<tr>
+								<td style="text-align: left;"><span class="rewriterSpan">${reply.rewriter }</span>
+									${reply.redate }</td>
+								<td style="text-align: right;"><c:if
+										test="${reply.rewriter == sessionScope.loginId }">
+										<button>수정</button>
+										<button>삭제</button>
+									</c:if></td>
+							</tr>
+							<tr>
+								<td class="replyContent" colspan="2">${reply.recontents }</td>
+							</tr>
+						</c:otherwise>
+						
+					</c:choose>
+				</c:forEach>
+			 
 			</table>
 		</div>
 		<!-- 댓글목록 양식 끝 -->
@@ -148,5 +169,10 @@
     <%@ include file="../includes/Footer.jsp" %>    
     <!-- Footer 끝 -->
 </body>
+<script type="text/javascript">
+	function replyModify(renum){
+		
+	}
+</script>
 
 </html>

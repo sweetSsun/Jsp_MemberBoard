@@ -9,7 +9,16 @@ public class BoardDto {
 	private String bdate;
 	private String bfilename;
 	private int bhits;
+	private int recount;
 	
+	
+	
+	public int getRecount() {
+		return recount;
+	}
+	public void setRecount(int recount) {
+		this.recount = recount;
+	}
 	public int getBno() {
 		return bno;
 	}
