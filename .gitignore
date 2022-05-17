@@ -1,5 +1,6 @@
 ### Eclipse ###
 .metadata
+.project
 bin/
 # Created by https://www.toptal.com/developers/gitignore/api/java,eclipse,windows
 # Edit at https://www.toptal.com/developers/gitignore?templates=java,eclipse,windows
@@ -91,6 +92,9 @@ local.properties
 *.zip
 *.tar.gz
 *.rar
+
+# JDT-specific (Eclipse Java Development Tools)
+.classpath
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
