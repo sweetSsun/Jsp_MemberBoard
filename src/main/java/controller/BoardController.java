@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.google.gson.Gson;
 import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
@@ -24,8 +25,8 @@ import service.BoardService;
  * Servlet implementation class BoardController
  */
 @WebServlet({"/Board/boardWrite", "/Board/boardList", "/Board/boardView",
-			"/Board/boardModiInfo", "/Board/boardModify", "/Board/boardDelete",
-			"/Board/boardSearch", "/Board/replyWrite", "/Board/replyAjax"})
+			"/Board/boardModiInfo", "/Board/boardModify", "/Board/boardDelete",	"/Board/boardSearch",
+			"/Board/replyWrite", "/Board/replyAjax", "/Board/replyList"})
 public class BoardController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -51,6 +52,9 @@ public class BoardController extends HttpServlet {
 
 		BoardService bsvc = new BoardService();
 		request.setCharacterEncoding("UTF-8");
+		
+		response.setContentType("text/html; charset=UTF-8");
+		
 		HttpSession session = request.getSession();
 		RequestDispatcher dispatcher;
 		MultipartRequest multi;
@@ -277,6 +281,23 @@ public class BoardController extends HttpServlet {
 				String result = "OK";
 				response.getWriter().append(result);
 			}
+			break;
+		
+		case "/Board/replyList":
+			System.out.println("댓글 목록 요청_ajax");
+			bno = Integer.parseInt(request.getParameter("bno"));
+			System.out.println("댓글목록 조회할 글 번호 : " + bno);
+			ArrayList<ReplyDto> ajaxReplyList = bsvc.getReplyList(bno);
+			System.out.println(ajaxReplyList);
+			// ajaxReplyList >> json 형식으로 변환 (스크립트에서 활용하는 형태)
+			// {"renum" : 10, "rebno : 1 ...}
+			
+			Gson gson = new Gson();
+			
+			String replyList_json = gson.toJson(ajaxReplyList);
+			System.out.println(replyList_json);
+			
+			response.getWriter().println(replyList_json);
 			break;
 		}
 	}

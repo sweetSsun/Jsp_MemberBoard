@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
@@ -75,7 +74,7 @@
         </div>
         
 	  <div class="content">
-		<!-- 댓글목록 양식 시작 -->
+		<!-- 댓글목록 양식 1 시작 -->
 		<div class="replyList" style="margin-top: 5px;">
 			<h2>댓글목록</h2>
 			<!-- 1. controller에서 상세보기할 때 함께 조회
@@ -167,6 +166,40 @@
 		</c:if>
 		<!-- 댓글작성 양식 끝 -->    
     </div>
+    
+    
+    	<!-- 댓글목록 2 시작 -->
+    <div class="content">
+    	<h2>댓글목록2 - ajax</h2>
+    	<div id="replyList_ajax" style="border:0">
+
+ 		</div>
+    	<!-- 댓글목록 2 끝 -->
+    	<hr>
+		<!-- 댓글작성 양식 2 시작 -->    
+		<!-- /Board/replyWrite -->
+    	<form action="replyWrite" method="post">
+    	댓글작성자 : <input type="text" name="rewriter" value="${sessionScope.loginId }">
+    	<br>
+    	원본글번호 : <input type="text" name="rebno" value="${boardView.bno }">
+    	<table border="1">
+    		<tr>
+    			<td>
+    				<label><input type="radio" name="restate" value="0" checked="checked">전체공개</label>
+    				<label><input type="radio" name="restate" value="1">비공개</label>
+    				<br>
+    				<textarea rows="" cols="" name="recontents" placeholder="댓글내용작성..."></textarea>
+    			</td>
+    		</tr>
+    		<tr>
+    			<th><button type="submit">댓글작성</button></th>
+    		</tr>
+    	</table>
+    	</form>    	
+   		<!-- 댓글작성 양식 2 끝 -->    
+    </div>  
+    
+    
     </div>
     
     <!-- Footer 시작 -->
@@ -175,32 +208,14 @@
 </body>
 <script type="text/javascript">
 	
-	function modifyReplyAjax(renum){
-		console.log(renum);
-		console.log(typeof renum);
-		
-	}
 
 
-	$(document).ready(function() {
+	$(document).ready(function() {		
+		console.log("확인!");
+		getReplyList();
 		
-		/* 댓글 불러오기 (refresh)
-		$.ajax({
-			type : "post",
-			url : "replyList",
-			data : {"rebno", $("#rebno").val()},
-			success : function(result){
-				var comments = "";
-				if (result.length == 0) {
-					comments = "등록된 댓글이 없습니다.";
-				} else {
-					comments += "포기"
-				}
-			}
-		})
-		*/
 		
-		$("#ajaxReply").click(function() {
+		/* $("#ajaxReply").click(function() {
 			var restate = $("#restate").val();
 			var rebno = $("#rebno").val();
 			var rewriter = $("#rewriter").val();
@@ -211,16 +226,49 @@
 				data : {"restate" : restate, "rebno" : rebno, "rewriter" : rewriter, "recontents" : recontents },
 				success : function(result){
 					if (result == "OK") {
-						console.log("댓글 작성 성공");					
+						console.log("댓글 작성 성공");			
+						getReplyList();
 					} else {
 						console.log("댓글 작성 실패");
 					}
 				}
 			});
 			
-		})
-		
+		})	 */
 	});
+	
+	
+	function getReplyList(){
+		console.log("getReplyList() 호출");
+		var boardNo = '${boardView.bno }';
+		var loginMemberId = '${sessionScope.loginId }';
+		console.log("boardNo : " + boardNo);
+		console.log("loginMemberId : " + loginMemberId);
+ 		$.ajax({
+			type : "get",
+			url : "replyList",
+			data : {"bno" : boardNo},
+			dataType : "json",  // 컨트롤러로부터 응답받는 데이터의 형태
+			async : false,
+			success : function(result){
+				console.log(result);
+				console.log("result.length : " + result.length);
+				console.log(result[0].recontents);
+				
+ 				var output = "<table border='1'>";
+				for (var i=0; result.length > i; i++) {
+					output += "<tr><td>" + result[i].rewriter + "</td>";
+					output += "<td>" + result[i].redate + "</td>";
+					output += "<td><button>삭제</button></td></tr>";
+					output += "<tr><td colspan='3'>" + result[i].recontents + "</td></tr>";
+				} 
+				output += "</table>";
+				$("#replyList_ajax").html(output);
+				
+			} 
+		});
+	}
+
 		
 </script>
 
