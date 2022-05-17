@@ -178,24 +178,20 @@
     	<hr>
 		<!-- 댓글작성 양식 2 시작 -->    
 		<!-- /Board/replyWrite -->
-    	<form action="replyWrite" method="post">
-    	댓글작성자 : <input type="text" name="rewriter" value="${sessionScope.loginId }">
-    	<br>
-    	원본글번호 : <input type="text" name="rebno" value="${boardView.bno }">
+
     	<table border="1">
     		<tr>
     			<td>
-    				<label><input type="radio" name="restate" value="0" checked="checked">전체공개</label>
-    				<label><input type="radio" name="restate" value="1">비공개</label>
+    				<label><input type="radio" name="restate_ajax" value="0" checked="checked">전체공개</label>
+    				<label><input type="radio" name="restate_ajax" value="1">비공개</label>
     				<br>
-    				<textarea rows="" cols="" name="recontents" placeholder="댓글내용작성..."></textarea>
+    				<textarea rows="" cols="" id="recontents_ajax" placeholder="댓글내용작성..."></textarea>
     			</td>
     		</tr>
     		<tr>
-    			<th><button type="submit">댓글작성</button></th>
+    			<th><button type="button" onclick="replyWrite_ajax()">댓글작성</button></th>
     		</tr>
     	</table>
-    	</form>    	
    		<!-- 댓글작성 양식 2 끝 -->    
     </div>  
     
@@ -207,26 +203,56 @@
     <!-- Footer 끝 -->
 </body>
 <script type="text/javascript">
-	
-
+	// 맨 아래 댓글작성폼 ajax 댓글 작성 함수 (선생님과 함께)
+	function replyWrite_ajax(){
+		console.log("replyWrite_ajax() 호출");
+		var rebno = "${boardView.bno }";
+		console.log("원본글번호 : " + rebno);
+		var rewriter = "${sessionScope.loginId }";
+		console.log("댓글작성자 : " + rewriter);
+		var restate = $('input:radio[name=restate_ajax]:checked').val();
+		// type이 radio인 input 태그 중 name이 restate_ajax인 체크된 value를 가져온다.
+		// radio 태그는 같은 이름으로 묶여있어야 하는데, id로 하면 중복값이 되기 때문에 name으로 명시하고 jQuery로 받아온다.
+		console.log("공개범위 : " + restate);
+		var recontents = $("#recontents_ajax").val();
+		console.log("댓글내용 : " + recontents);
+		$.ajax({
+			type : "post",
+			url : "replyWrite_ajax",
+			data : {"restate" : restate, "rebno" : rebno, "rewriter" : rewriter, "recontents" : recontents },
+			async : false,
+			success : function(result){
+				console.log("댓글 작성 결과 : " + result);
+				if (result == "OK") {
+					console.log("댓글 작성 성공");			
+					$("#recontents_ajax").val("");
+					getReplyList();
+				} else {
+					console.log("댓글 작성 실패");
+				} 
+			}
+		});
+	}
 
 	$(document).ready(function() {		
 		console.log("확인!");
 		getReplyList();
 		
-		
-		/* $("#ajaxReply").click(function() {
+		// 내가 한 ajax 댓글 작성 함수
+		$("#ajaxReply").click(function() {
+			console.log("ajax 댓글 작성 요청")
 			var restate = $("#restate").val();
 			var rebno = $("#rebno").val();
 			var rewriter = $("#rewriter").val();
 			var recontents = $("#recontents").val();
 			$.ajax({
 				type : "post",
-				url : "replyAjax",
+				url : "replyWrite_ajax",
 				data : {"restate" : restate, "rebno" : rebno, "rewriter" : rewriter, "recontents" : recontents },
 				success : function(result){
 					if (result == "OK") {
-						console.log("댓글 작성 성공");			
+						console.log("댓글 작성 성공");		
+						$("#recontents_ajax").val("");
 						getReplyList();
 					} else {
 						console.log("댓글 작성 실패");
@@ -234,16 +260,13 @@
 				}
 			});
 			
-		})	 */
+		});
 	});
 	
-	
+	// 댓글 목록을 가져오고 출력해주는 함수
 	function getReplyList(){
 		console.log("getReplyList() 호출");
 		var boardNo = '${boardView.bno }';
-		var loginMemberId = '${sessionScope.loginId }';
-		console.log("boardNo : " + boardNo);
-		console.log("loginMemberId : " + loginMemberId);
  		$.ajax({
 			type : "get",
 			url : "replyList",
@@ -253,22 +276,57 @@
 			success : function(result){
 				console.log(result);
 				console.log("result.length : " + result.length);
-				console.log(result[0].recontents);
-				
- 				var output = "<table border='1'>";
-				for (var i=0; result.length > i; i++) {
-					output += "<tr><td>" + result[i].rewriter + "</td>";
-					output += "<td>" + result[i].redate + "</td>";
-					output += "<td><button>삭제</button></td></tr>";
-					output += "<tr><td colspan='3'>" + result[i].recontents + "</td></tr>";
-				} 
-				output += "</table>";
-				$("#replyList_ajax").html(output);
-				
+				replyListPrint(result);				
 			} 
 		});
 	}
+	
+	// 댓글 목록 출력을 위해 변수에 html 코드를 누적하는 함수
+	function replyListPrint(result){
+		var loginMemberId = '${sessionScope.loginId }';
+		var boardWriter = '${boardView.bwriter }';
+		
+		var output = "<table border='1'>";
+		for (var i=0; result.length > i; i++) {
+			if (result[i].restate == 1){
+				if (result[i].rewriter == loginMemberId || boardWriter == loginMemberId){
+					output += "<tr>";
+					output += "<td>" + result[i].rewriter + "</td>";
+					output += "<td>" + result[i].redate + "</td>";
+					
+					if(result[i].rewriter == loginMemberId){
+						output += "<td><button onclick='replyDelete(\"" + result[i].renum + "\")'>삭제</button></td>";					
+					} else {
+						output += "<td></td>";
+					}
+					output += "</tr>"
+					output += "<tr><td colspan='3'>" + result[i].recontents + "</td></tr>";
+				} else {
+					output += "<tr><td colspan='3'>[비공개 댓글입니다.]</td></tr>";						
+				}
+			} else {
+				output += "<tr>";
+				output += "<td>" + result[i].rewriter + "</td>";
+				output += "<td>" + result[i].redate + "</td>";
+				
+				if(result[i].rewriter == loginMemberId){
+					output += "<td><button onclick='replyDelete(\"" + result[i].renum + "\")'>삭제</button></td>";							
+				} else {
+					output += "<td></td>";
+				}
+				output += "</tr>"
+				output += "<tr><td colspan='3'>" + result[i].recontents + "</td></tr>";
+			}
+		} 
+		output += "</table>";
+		$("#replyList_ajax").html(output);
+	}
 
+	function replyDelete(renum){
+		console.log("replyDelete() 호출");
+		console.log("삭제하고자 하는 댓글 번호 : " + renum);
+		
+	}
 		
 </script>
 

@@ -26,7 +26,7 @@ import service.BoardService;
  */
 @WebServlet({"/Board/boardWrite", "/Board/boardList", "/Board/boardView",
 			"/Board/boardModiInfo", "/Board/boardModify", "/Board/boardDelete",	"/Board/boardSearch",
-			"/Board/replyWrite", "/Board/replyAjax", "/Board/replyList"})
+			"/Board/replyWrite", "/Board/replyWrite_ajax", "/Board/replyList"})
 public class BoardController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -263,7 +263,7 @@ public class BoardController extends HttpServlet {
 			
 			break;
 			
-		case "/Board/replyAjax":
+		case "/Board/replyWrite_ajax":
 			System.out.println("ajax로 댓글 작성 요청");
 			rebno = Integer.parseInt(request.getParameter("rebno"));
 			restate = Integer.parseInt(request.getParameter("restate"));
