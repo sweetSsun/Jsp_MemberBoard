@@ -10,6 +10,13 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath }/CSS/BoardView.css">
     <script	src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"	integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
+<script type="text/javascript">
+	var checkMsg = "${param.checkMsg }";
+	console.log(checkMsg);
+	if (checkMsg.length > 0) {
+		alert(checkMsg);
+	}
+</script>
 <body>
     <!-- Header 시작 -->
     <%@ include file="../includes/Header.jsp" %>    
@@ -146,8 +153,8 @@
 			<table>
 				<tr>
 					<td>
-						<input type="radio" name="restate" id="restate" value="0" checked="checked">전체공개
-						<input type="radio" name="restate" id="restate" value="1">비공개
+							<input type="radio" name="restate" id="restate" value="0" checked="checked">전체공개
+							<input type="radio" name="restate" id="restate" value="1">비공개
 						<br>
 						<input type="hidden" name="rebno" id="rebno" value="${boardView.bno }">
 						<input type="hidden" name="rewriter" id="rewriter" value="${sessionScope.loginId }">
@@ -178,7 +185,7 @@
     	<hr>
 		<!-- 댓글작성 양식 2 시작 -->    
 		<!-- /Board/replyWrite -->
-
+		<h2>댓글작성폼2</h2>
     	<table border="1" width="80%">
     		<tr>
     			<td>
@@ -228,8 +235,10 @@
 					console.log("댓글 작성 성공");			
 					$("#recontents_ajax").val("");
 					getReplyList();
+					alert("댓글이 등록되었습니다.")
 				} else {
 					console.log("댓글 작성 실패");
+					alert("댓글 등록에 실패했습니다.")
 				} 
 			}
 		});
@@ -253,10 +262,11 @@
 				success : function(result){
 					if (result == "OK") {
 						console.log("댓글 작성 성공");		
-						$("#recontents_ajax").val("");
 						getReplyList();
+						alert("댓글이 등록되었습니다.")
 					} else {
 						console.log("댓글 작성 실패");
+						alert("댓글 등록에 실패했습니다.")
 					}
 				}
 			});
@@ -270,13 +280,14 @@
 		var boardNo = '${boardView.bno }';
  		$.ajax({
 			type : "get",
-			url : "replyList",
+			url : "replyList_ajax",
 			data : {"bno" : boardNo},
 			dataType : "json",  // 컨트롤러로부터 응답받는 데이터의 형태
 			async : false,
 			success : function(result){
 				console.log(result);
 				console.log("result.length : " + result.length);
+				$("#recontents_ajax").val("");
 				replyListPrint(result);				
 			} 
 		});
@@ -296,7 +307,7 @@
 					output += "<td>" + result[i].redate + "</td>";
 					
 					if(result[i].rewriter == loginMemberId){
-						output += "<td><button onclick='replyModify_ajax(\"" + result[i].renum + "\")'>수정</button>";
+						output += "<td><button onclick='replyModifyForm_ajax(\"" + result[i].renum + "\")'>수정</button>";
 						output += "<button onclick='replyDelete_ajax(\"" + result[i].renum + "\")'>삭제</button></td>";					
 					} else {
 						output += "<td></td>";
@@ -312,7 +323,7 @@
 				output += "<td>" + result[i].redate + "</td>";
 				
 				if(result[i].rewriter == loginMemberId){
-					output += "<td><button onclick='replyModify_ajax(\"" + result[i].renum + "\")'>수정</button>";
+					output += "<td><button onclick='replyModifyForm_ajax(\"" + result[i].renum + "\")'>수정</button>";
 					output += "<button onclick='replyDelete_ajax(\"" + result[i].renum + "\")'>삭제</button></td>";							
 				} else {
 					output += "<td></td>";
@@ -338,8 +349,10 @@
  				if (result == "OK") {
 					console.log("댓글 삭제 성공");
 					getReplyList();
+					alert(renum + "번 댓글이 삭제되었습니다.");
 				} else {
 					console.log("댓글 삭제 실패");
+					alert(renum + "번 댓글 삭제에 실패했습니다.");
 				} 
 			}
 		});
@@ -351,6 +364,88 @@
 		console.log("renum : " + renum);
 		console.log("bno : " + bno);
 		location.href = "${pageContext.request.contextPath }/Board/replyDelete?renum=" + renum + "&bno=" + bno;
+	}
+	
+	// ajax로 댓글 수정
+	function replyModifyForm_ajax(renum){
+		console.log("수정할 댓글번호 : " + renum);
+		var rebno = "${boardView.bno }";
+		console.log("수정할 댓글의 글 번호 : " + rebno);
+		$.ajax({
+			type : "get",
+			url : "replyList_ajax",
+			data : {"bno" : rebno},
+			dataType : "json",
+			success : function(result){
+				console.log("목록 조회 성공");
+				$("#recontents_ajax").val("");
+				modifyReplyList(result, renum);	
+			}
+		});
+	}
+	
+	function replyModify(renum, modicontents){
+		//var modicontents;  // 수정 필요~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		console.log(renum);
+		console.log(modicontents);
+		
+	}
+	
+	// 댓글 목록과 수정 댓글 변경을 할 변수에 html 코드를 누적하는 함수
+	function modifyReplyList(result, modiRenum){
+		
+		
+		var loginMemberId = '${sessionScope.loginId }';
+		var boardWriter = '${boardView.bwriter }';
+		
+		var output = "<table border='1' width='80%'>";
+		for (var i=0; result.length > i; i++) {
+			if (result[i].renum == modiRenum){
+				output += "<tr>";
+				output += "<td>" + result[i].rewriter + "</td>";
+				output += "<td>" + result[i].redate + "</td>";
+				output += "<td><button onclick='replyModify(\"" + result[i].renum + "\",\""+$("#modicontents").val()+"\")'>수정완료</button></td>"; // 여기~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+				output += "</tr>";
+				output += "<tr><td colspan='3'><textarea id='modicontents'>" + result[i].recontents + "</textarea></td></tr>";
+				// html은 먼저 다 들어가버리고, 해당 value들은 아직 들어오지 않은 상태일수도. 그래서 해당 value를 불러도 html에서는 조회를 못하는 것
+			} else if (result[i].restate == 1){
+				if (result[i].rewriter == loginMemberId || boardWriter == loginMemberId){
+					output += "<tr>";
+					output += "<td>" + result[i].rewriter + "</td>";
+					output += "<td>" + result[i].redate + "</td>";
+					
+					if(result[i].rewriter == loginMemberId){
+						output += "<td><button onclick='replyModifyForm_ajax(\"" + result[i].renum + "\")'>수정</button>";
+						output += "<button onclick='replyDelete_ajax(\"" + result[i].renum + "\")'>삭제</button></td>";					
+					} else {
+						output += "<td></td>";
+					}
+					
+					
+					output += "</tr>"
+					output += "<tr><td colspan='3'>" + result[i].recontents + "</td></tr>";
+				} else {
+					output += "<tr><td colspan='3'>[비공개 댓글입니다.]</td></tr>";						
+				}
+			} else {
+				output += "<tr>";
+				output += "<td>" + result[i].rewriter + "</td>";
+				output += "<td>" + result[i].redate + "</td>";
+				
+				if(result[i].rewriter == loginMemberId){
+					output += "<td><button onclick='replyModifyForm_ajax(\"" + result[i].renum + "\")'>수정</button>";
+					output += "<button onclick='replyDelete_ajax(\"" + result[i].renum + "\")'>삭제</button></td>";							
+				} else {
+					output += "<td></td>";
+				}
+				output += "</tr>"
+				output += "<tr><td colspan='3'>" + result[i].recontents + "</td></tr>";
+			}
+		} 
+		output += "</table>";
+		console.log($("#modicontents").val());
+		$("#replyList_ajax").html(output);
+		
 		
 	}
 		

@@ -37,16 +37,8 @@
         <div class="content">
         	<h2>글목록</h2>
         	<table>
-				<tr>
-					<td colspan="5" style="text-align:right;">
-        				<c:if test="${sessionScope.loginId != null }">
-        					<button onclick="boardWirteForm()">글작성1</button>
-        				</c:if>
-        				<button onclick="boardWirteForm2('${sessionScope.loginId }')">글작성2</button>
-        			</td>
-        		</tr>
         		<tr>
-        			<th colspan="5">
+        			<th colspan="6">
 		        		<!-- 검색창 -->
 		        		<select id="searchType" onchange="console.log(this.value)">
 		        			<option value="btitle">글제목</option>
@@ -55,6 +47,9 @@
 		        		</select>
         				<input type="text" size="30" id="searchText" placeholder="검색할 단어">
         				<button onclick="searchBoard()">검색</button> 
+        				<c:if test="${sessionScope.loginId != null }">
+        					<button onclick="boardWirteForm()">글작성1</button>
+        				</c:if>
 					</th>
 				</tr>
         		<c:if test="${param.searchText != '' and param.searchText != null }">
@@ -86,6 +81,18 @@
         			<td>${board.bhits }</td>
         		</tr>        		
         		</c:forEach>
+        		
+        		<tr>
+        			<td>
+						<select id="orderTypeSel" onchange="boardListOrder(this.value)">
+							<option value=bno>작성일 순</option>
+							<option value=recount>댓글수 순</option>
+							<option value=bhits>조회수 순</option>
+						</select>
+					</td>
+					<td colspan="5">
+					</td>
+        		</tr>
         	
         	</table>
         </div>
@@ -97,6 +104,33 @@
 </body>
 <script type="text/javascript">
 
+	function boardListOrder(orderType) {
+		//var listType = $("#listType").val();
+		console.log(orderType);
+		location.href = "${pageContext.request.contextPath }/Board/boardList?orderType=" + orderType;
+	}
+	
+	$(document).ready(function(){
+		var orderOption = $("#orderTypeSel option");
+		// 아이디가 orderTypeSel 인 option태그
+		console.log(orderOption.length);
+		// 의 길이
+		var orderType = '${param.orderType}';
+		console.log(orderType);
+	
+		for(var i = 0; i < orderOption.length; i++){
+			if($(orderOption).eq(i).val() == orderType) {
+				console.log("value : " + $(orderOption).eq(i).val());
+				console.log(orderType);
+				// i번째 인덱스
+				$(orderOption).eq(i).attr("selected","selected");
+				// 파라미터 값이 해당 option태그 인덱스와 동일하면 그것을 selected
+			}
+		}
+	});
+	
+	
+	
 	function boardWirteForm(){
 		location.href="BoardWriteForm.jsp";
 	}

@@ -68,8 +68,15 @@ public class BoardDao {
 	}
 
 	// 글 목록 select
-	public ArrayList<BoardDto> getBoardList() {
-		String sql = "SELECT * FROM BOARDS WHERE BSTATE=0 ORDER BY BNO";
+	public ArrayList<BoardDto> getBoardList(String orderType) {
+		//String sql = "SELECT * FROM BOARDS WHERE BSTATE=0 ORDER BY BNO";
+		String sql = "SELECT B.BNO, B.BWRITER, B.BTITLE, B.BCONTENTS, B.BDATE, B.BFILENAME, B.BHITS, NVL( RE.RECOUNT, 0 ) AS RECOUNT"
+				+ " FROM BOARDS B "
+				+ "    LEFT OUTER JOIN (SELECT REBNO, COUNT(REBNO) AS RECOUNT FROM BOARDREPLY GROUP BY REBNO) RE"
+				+ "    ON B.BNO=RE.REBNO"
+				+ " WHERE BSTATE=0"
+				+ " ORDER BY " + orderType + " DESC";
+		
 		ArrayList<BoardDto> boardList = new ArrayList<BoardDto>();
 		BoardDto board = null;
 		try {
@@ -84,6 +91,7 @@ public class BoardDao {
 				board.setBdate(rs.getString(5));
 				board.setBfilename(rs.getString(6));
 				board.setBhits(rs.getInt(7));
+				board.setRecount(rs.getInt(8));
 				boardList.add(board);
 			}
 		} catch (SQLException e) {
@@ -159,7 +167,10 @@ public class BoardDao {
 	}
 
 	public ArrayList<BoardDto> searchBoard(String searchStr, String searchType) {
-		String sql = "SELECT * FROM BOARDS WHERE " + searchType + " LIKE '%'||?||'%' AND BSTATE=0";
+		String sql = "SELECT B.BNO, B.BWRITER, B.BTITLE, B.BCONTENTS, B.BDATE, B.BFILENAME, B.BHITS, NVL( RE.RECOUNT, 0 )"
+				+ " FROM BOARDS B LEFT OUTER JOIN (SELECT REBNO, COUNT(REBNO) AS RECOUNT FROM BOARDREPLY GROUP BY REBNO) RE ON B.BNO=RE.REBNO"
+				+ " WHERE " + searchType + " LIKE '%'||?||'%' AND BSTATE=0"
+				+ " ORDER BY BNO";
 		ArrayList<BoardDto> searchList = new ArrayList<BoardDto>();
 		BoardDto searchBoard = null;
 		try {
@@ -175,6 +186,7 @@ public class BoardDao {
 				searchBoard.setBdate(rs.getString(5));
 				searchBoard.setBfilename(rs.getString(6));
 				searchBoard.setBhits(rs.getInt(7));
+				searchBoard.setRecount(rs.getInt(8));
 				searchList.add(searchBoard);
 			}
 		} catch (SQLException e) {

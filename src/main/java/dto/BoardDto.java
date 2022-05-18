@@ -64,7 +64,7 @@ public class BoardDto {
 	@Override
 	public String toString() {
 		return "BoardDto [bno=" + bno + ", bwriter=" + bwriter + ", btitle=" + btitle + ", bcontents=" + bcontents
-				+ ", bdate=" + bdate + ", bfilename=" + bfilename + ", bhits=" + bhits + "]";
+				+ ", bdate=" + bdate + ", bfilename=" + bfilename + ", bhits=" + bhits + ", recount=" + recount + "]";
 	}
 	
 	
