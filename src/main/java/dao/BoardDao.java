@@ -241,5 +241,18 @@ public class BoardDao {
 		return replyList;		
 	}
 
+	public int replyDelete(int renum) {
+		String sql = "DELETE FROM BOARDREPLY WHERE RENUM=?";
+		int deleteResult = 0;
+		try {
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, renum);
+			deleteResult = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}		
+		return deleteResult;
+	}
+
 
 }

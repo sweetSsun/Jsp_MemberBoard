@@ -166,6 +166,14 @@ public class BoardService {
 		}
 		return replyList;
 	}
+
+	// 댓글 삭제
+	public int replyDelete(int renum) {
+		System.out.println("BoardService.replyDelete() 호출");
+		int deleteResult = bdao.replyDelete(renum);
+
+		return deleteResult;
+	}
 	
 	
 

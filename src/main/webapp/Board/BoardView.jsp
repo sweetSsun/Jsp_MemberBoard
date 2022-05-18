@@ -97,8 +97,8 @@
 									 	</td>	
 									 	<td style="text-align:right;">
 						 					<c:if test="${reply.rewriter == sessionScope.loginId }">
-											<button onclick="modifyReplyAjax(${reply.renum })">수정</button>
-											<button>삭제</button>
+											<button onclick="">수정</button>
+											<button onclick="replyDelete(${reply.renum }, ${boardView.bno })">삭제</button>
 								 			</c:if>
 										</td>				
 									</tr>
@@ -122,8 +122,8 @@
 									${reply.redate }</td>
 								<td style="text-align: right;"><c:if
 										test="${reply.rewriter == sessionScope.loginId }">
-										<button onclick="modifyReplyAjax(${reply.renum })">수정</button>
-										<button>삭제</button>
+										<button onclick="">수정</button>
+										<button onclick="replyDelete(${reply.renum }, ${boardView.bno })">삭제</button>
 									</c:if></td>
 							</tr>
 							<tr>
@@ -179,13 +179,13 @@
 		<!-- 댓글작성 양식 2 시작 -->    
 		<!-- /Board/replyWrite -->
 
-    	<table border="1">
+    	<table border="1" width="80%">
     		<tr>
     			<td>
     				<label><input type="radio" name="restate_ajax" value="0" checked="checked">전체공개</label>
     				<label><input type="radio" name="restate_ajax" value="1">비공개</label>
     				<br>
-    				<textarea rows="" cols="" id="recontents_ajax" placeholder="댓글내용작성..."></textarea>
+    				<textarea rows="2" width="100%" id="recontents_ajax" placeholder="댓글내용작성..."></textarea>
     			</td>
     		</tr>
     		<tr>
@@ -202,6 +202,7 @@
     <%@ include file="../includes/Footer.jsp" %>    
     <!-- Footer 끝 -->
 </body>
+
 <script type="text/javascript">
 	// 맨 아래 댓글작성폼 ajax 댓글 작성 함수 (선생님과 함께)
 	function replyWrite_ajax(){
@@ -286,7 +287,7 @@
 		var loginMemberId = '${sessionScope.loginId }';
 		var boardWriter = '${boardView.bwriter }';
 		
-		var output = "<table border='1'>";
+		var output = "<table border='1' width='80%'>";
 		for (var i=0; result.length > i; i++) {
 			if (result[i].restate == 1){
 				if (result[i].rewriter == loginMemberId || boardWriter == loginMemberId){
@@ -295,7 +296,8 @@
 					output += "<td>" + result[i].redate + "</td>";
 					
 					if(result[i].rewriter == loginMemberId){
-						output += "<td><button onclick='replyDelete(\"" + result[i].renum + "\")'>삭제</button></td>";					
+						output += "<td><button onclick='replyModify_ajax(\"" + result[i].renum + "\")'>수정</button>";
+						output += "<button onclick='replyDelete_ajax(\"" + result[i].renum + "\")'>삭제</button></td>";					
 					} else {
 						output += "<td></td>";
 					}
@@ -310,7 +312,8 @@
 				output += "<td>" + result[i].redate + "</td>";
 				
 				if(result[i].rewriter == loginMemberId){
-					output += "<td><button onclick='replyDelete(\"" + result[i].renum + "\")'>삭제</button></td>";							
+					output += "<td><button onclick='replyModify_ajax(\"" + result[i].renum + "\")'>수정</button>";
+					output += "<button onclick='replyDelete_ajax(\"" + result[i].renum + "\")'>삭제</button></td>";							
 				} else {
 					output += "<td></td>";
 				}
@@ -322,9 +325,32 @@
 		$("#replyList_ajax").html(output);
 	}
 
-	function replyDelete(renum){
-		console.log("replyDelete() 호출");
+	// ajax로 댓글삭제
+	function replyDelete_ajax(renum){
+		console.log("replyDelete_ajax() 호출");
 		console.log("삭제하고자 하는 댓글 번호 : " + renum);
+		$.ajax({
+			type : "get",
+			url : "replyDelete_ajax",
+			data : {"renum" : renum},
+			success : function(result){
+				console.log("result : " + result);
+ 				if (result == "OK") {
+					console.log("댓글 삭제 성공");
+					getReplyList();
+				} else {
+					console.log("댓글 삭제 실패");
+				} 
+			}
+		});
+	}
+	
+	// controller로 댓글삭제
+	function replyDelete(renum, bno){
+		console.log("replyDelete() 호출");
+		console.log("renum : " + renum);
+		console.log("bno : " + bno);
+		location.href = "${pageContext.request.contextPath }/Board/replyDelete?renum=" + renum + "&bno=" + bno;
 		
 	}
 		

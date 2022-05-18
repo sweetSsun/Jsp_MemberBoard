@@ -60,7 +60,7 @@ input {
 }
 
 .replyList table, .replyForm table{
-	width: 100%;
+	width: 80%;
 }
 
 .replyForm textarea{

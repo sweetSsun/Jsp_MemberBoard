@@ -26,7 +26,8 @@ import service.BoardService;
  */
 @WebServlet({"/Board/boardWrite", "/Board/boardList", "/Board/boardView",
 			"/Board/boardModiInfo", "/Board/boardModify", "/Board/boardDelete",	"/Board/boardSearch",
-			"/Board/replyWrite", "/Board/replyWrite_ajax", "/Board/replyList"})
+			"/Board/replyWrite", "/Board/replyWrite_ajax", "/Board/replyList", 
+			"/Board/replyDelete", "/Board/replyDelete_ajax"})
 public class BoardController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -299,6 +300,38 @@ public class BoardController extends HttpServlet {
 			
 			response.getWriter().println(replyList_json);
 			break;
+			
+		case "/Board/replyDelete":
+			System.out.println("댓글 삭제 요청");
+			int renum = Integer.parseInt(request.getParameter("renum"));
+			bno = Integer.parseInt(request.getParameter("bno"));
+			System.out.println("삭제하고자 하는 댓글 번호 : " + renum);
+			System.out.println("삭제 후 이동할 글 번호 : " + bno);
+			int deleteResult = bsvc.replyDelete(renum);
+			if (deleteResult > 0) {
+				System.out.println("댓글 삭제 성공");
+				response.sendRedirect(contextPath + "/Board/boardView?bno=" + bno);
+			} else {
+				System.out.println("댓글 삭제 실패");
+				String deleteFail = renum + "번 댓글 삭제에 실패하였습니다.";
+				response.sendRedirect(contextPath + "/Board/Fail.jsp?checkMsg=" 
+									+ URLEncoder.encode(deleteFail, "UTF-8"));
+			}
+			break;
+
+		case "/Board/replyDelete_ajax":
+			System.out.println("댓글 삭제 요청_ajax");
+			renum = Integer.parseInt(request.getParameter("renum"));
+			deleteResult = bsvc.replyDelete(renum);
+			String result = null;
+			if (deleteResult > 0) {
+				result = "OK";
+			} else {
+				result = "Fail";
+			}
+			response.getWriter().append(result);
+			break;
+		
 		}
 	}
 
