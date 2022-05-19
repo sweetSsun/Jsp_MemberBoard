@@ -9,6 +9,11 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath }/CSS/joinForm.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath }/CSS/BoardView.css">
     <script	src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"	integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>
+    	.d_none{
+    		display: none;
+    	}
+    </style>
 </head>
 <script type="text/javascript">
 	var checkMsg = "${param.checkMsg }";
@@ -104,8 +109,8 @@
 									 	</td>	
 									 	<td style="text-align:right;">
 						 					<c:if test="${reply.rewriter == sessionScope.loginId }">
-											<button onclick="">수정</button>
-											<button onclick="replyDelete(${reply.renum }, ${boardView.bno })">삭제</button>
+												<button onclick="">수정</button>
+												<button onclick="replyDelete(${reply.renum }, ${boardView.bno })">삭제</button>
 								 			</c:if>
 										</td>				
 									</tr>
@@ -127,14 +132,31 @@
 							<tr>
 								<td style="text-align: left;"><span class="rewriterSpan">${reply.rewriter }</span>
 									${reply.redate }</td>
-								<td style="text-align: right;"><c:if
-										test="${reply.rewriter == sessionScope.loginId }">
-										<button onclick="">수정</button>
+								<td style="text-align: right;">
+									<c:if test="${reply.rewriter == sessionScope.loginId }">
+										<button onclick="replyModifyForm('re${reply.renum }', 'modiContent${reply.renum }')">수정</button>
 										<button onclick="replyDelete(${reply.renum }, ${boardView.bno })">삭제</button>
-									</c:if></td>
+									</c:if>
+								</td>
 							</tr>
 							<tr>
-								<td class="replyContent" colspan="2">${reply.recontents }</td>
+								<td class="replyContent" colspan="2">${reply.recontents }
+								<form action="replyModify" method="post" class="d_none" id="re${reply.renum }">
+									<input type="hidden" name=bno value="${boardView.bno }">
+									<table border="1">
+										<tr>
+											<td><input readonly value="${reply.rewriter }"></td>
+											<td><input readonly name="renum" value="${reply.renum }"></td>
+											<td><button>수정완료</button></td>
+										</tr>
+										<tr>
+											<td colspan="3">
+											<input type="text" name="modiContents" id="modiContent${reply.renum }" value="${reply.recontents }">
+											</td>
+										</tr>
+									</table>
+								</form>
+								</td>
 							</tr>
 						</c:otherwise>
 						
@@ -185,8 +207,9 @@
     	<hr>
 		<!-- 댓글작성 양식 2 시작 -->    
 		<!-- /Board/replyWrite -->
+	<div class="replyForm">
 		<h2>댓글작성폼2</h2>
-    	<table border="1" width="80%">
+    	<table width="80%">
     		<tr>
     			<td>
     				<label><input type="radio" name="restate_ajax" value="0" checked="checked">전체공개</label>
@@ -201,7 +224,7 @@
     	</table>
    		<!-- 댓글작성 양식 2 끝 -->    
     </div>  
-    
+    </div>
     
     </div>
     
@@ -368,6 +391,7 @@
 	
 	// ajax로 댓글 수정
 	function replyModifyForm_ajax(renum){
+		var modicontents;
 		console.log("수정할 댓글번호 : " + renum);
 		var rebno = "${boardView.bno }";
 		console.log("수정할 댓글의 글 번호 : " + rebno);
@@ -376,6 +400,7 @@
 			url : "replyList_ajax",
 			data : {"bno" : rebno},
 			dataType : "json",
+			async : false,
 			success : function(result){
 				console.log("목록 조회 성공");
 				$("#recontents_ajax").val("");
@@ -384,16 +409,43 @@
 		});
 	}
 	
-	function replyModify(renum, modicontents){
+	// Controller 댓글 수정폼 출력 (form 태그 숨김/출력 토글 기능으로)
+	function replyModifyForm(modiRenumId, modiRecontentsId){
+		console.log( $("#"+modiRenumId) );
+		$("#"+modiRenumId).toggleClass("d_none");
+		$("#"+modiRecontentsId).focus();		
+	}
+	
+	function replyModify(renum){
 		//var modicontents;  // 수정 필요~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		console.log(renum);
-		console.log(modicontents);
+		console.log("renum : " + renum);
+		var modiContents = $("#modiContents").val();
+		console.log("modiContents : " + modiContents);
+		location.href = "${pageContext.request.contextPath }/Board/replyModify_ajax?renum=" + renum
+						+ "&modiContents=" + modiContents;
 		
 	}
 	
 	// 댓글 목록과 수정 댓글 변경을 할 변수에 html 코드를 누적하는 함수
 	function modifyReplyList(result, modiRenum){
+		/*
+		-- 처음 생각한 진행순서
+		1. 수정 버튼 클릭
+		2. 댓글목록 조회하는 ajax 진행 >> result 반환
+		3. output 코드 작성 >> innerHTML로 입력
+		4. 댓글수정 폼 출력
+		5. 댓글 수정 (value 입력)
+		6. 수정완료 버튼 클릭
+		7. replyModify 메소드 호출 (이미 output은 들어갔고, 수정한 댓글의 value 변수로 받음)
 		
+		-- 고민 후 변경된 진행순서
+		1. 수정 버튼 클릭
+		2. 댓글목록 조회하는 ajax 진행 >> result 반환
+		3. ouput 코드 작성 >> 입력 
+			(이미 여기서 modicontents의 value를 검색하고 값을 넣은 채로 innerHTML 됨 >> innerTHML 되고 나서 값이 생기는 것))
+		4. 댓글수정 폼 출력 (modicontents의 value는 undifined인 상태로 폼이 출력된 것)
+		5. 수정완료 버튼 클릭
+		*/
 		
 		var loginMemberId = '${sessionScope.loginId }';
 		var boardWriter = '${boardView.bwriter }';
@@ -404,9 +456,13 @@
 				output += "<tr>";
 				output += "<td>" + result[i].rewriter + "</td>";
 				output += "<td>" + result[i].redate + "</td>";
-				output += "<td><button onclick='replyModify(\"" + result[i].renum + "\",\""+$("#modicontents").val()+"\")'>수정완료</button></td>"; // 여기~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+				
+				output += "<td><button onclick='replyModify(\"" + result[i].renum + "\")'>수정완료</button></td>"; // 여기~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+				//,\""+modicontents+"\"
+				
 				output += "</tr>";
-				output += "<tr><td colspan='3'><textarea id='modicontents'>" + result[i].recontents + "</textarea></td></tr>";
+				output += "<tr><td colspan='3'><textarea id='modiContents'>" + result[i].recontents + "</textarea></td></tr>";
 				// html은 먼저 다 들어가버리고, 해당 value들은 아직 들어오지 않은 상태일수도. 그래서 해당 value를 불러도 html에서는 조회를 못하는 것
 			} else if (result[i].restate == 1){
 				if (result[i].rewriter == loginMemberId || boardWriter == loginMemberId){
@@ -443,9 +499,7 @@
 			}
 		} 
 		output += "</table>";
-		console.log($("#modicontents").val());
 		$("#replyList_ajax").html(output);
-		
 		
 	}
 		

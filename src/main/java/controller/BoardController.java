@@ -28,7 +28,7 @@ import service.BoardService;
 			"/Board/boardModiInfo", "/Board/boardModify", "/Board/boardDelete",	"/Board/boardSearch",
 			"/Board/replyWrite", "/Board/replyWrite_ajax", "/Board/replyList_ajax", 
 			"/Board/replyDelete", "/Board/replyDelete_ajax",
-			"/Board/replyModify_ajax"})
+			"/Board/replyModify", "/Board/replyModify_ajax"})
 public class BoardController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -339,10 +339,26 @@ public class BoardController extends HttpServlet {
 			response.getWriter().append(result);
 			break;
 		
+		case "/Board/replyModify":
+			System.out.println("댓글 수정 요청");
+			renum = Integer.parseInt(request.getParameter("renum"));
+			String modiContents = request.getParameter("modiContents");
+			bno = Integer.parseInt(request.getParameter("bno"));
+			System.out.println("수정할 댓글 번호 : " + renum);
+			System.out.println("수정할 댓글 내용 : " + modiContents);
+			System.out.println("수정 후 이동할 글번호 : " + bno);
+			
+			updateResult = bsvc.replyModify(renum, modiContents);
+			if (updateResult > 0) {
+				response.sendRedirect(contextPath+"/Board/boardView?bno="+bno);
+			}
+			break;
+			
 		case "/Board/replyModify_ajax":
 			System.out.println("댓글 수정 요청_ajax");
 			renum = Integer.parseInt(request.getParameter("renum"));
-			
+			modiContents = request.getParameter("modiContents");
+//			updateResult = bsvc.replyModify(renum, modiContents);
 			break;
 		}
 	}

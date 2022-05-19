@@ -177,6 +177,12 @@ public class BoardService {
 
 		return deleteResult;
 	}
+
+	public int replyModify(int renum, String modiContents) {
+		System.out.println("BoardService.replyModify() 호출");
+		int updateResult = bdao.replyModify(renum, modiContents);
+		return updateResult;
+	}
 	
 	
 

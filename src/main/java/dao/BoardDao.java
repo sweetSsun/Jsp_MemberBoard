@@ -70,7 +70,7 @@ public class BoardDao {
 	// 글 목록 select
 	public ArrayList<BoardDto> getBoardList(String orderType) {
 		//String sql = "SELECT * FROM BOARDS WHERE BSTATE=0 ORDER BY BNO";
-		String sql = "SELECT B.BNO, B.BWRITER, B.BTITLE, B.BCONTENTS, B.BDATE, B.BFILENAME, B.BHITS, NVL( RE.RECOUNT, 0 ) AS RECOUNT"
+		String sql = "SELECT B.*, NVL( RE.RECOUNT, 0 ) AS RECOUNT"
 				+ " FROM BOARDS B "
 				+ "    LEFT OUTER JOIN (SELECT REBNO, COUNT(REBNO) AS RECOUNT FROM BOARDREPLY GROUP BY REBNO) RE"
 				+ "    ON B.BNO=RE.REBNO"
@@ -91,7 +91,7 @@ public class BoardDao {
 				board.setBdate(rs.getString(5));
 				board.setBfilename(rs.getString(6));
 				board.setBhits(rs.getInt(7));
-				board.setRecount(rs.getInt(8));
+				board.setRecount(rs.getInt(9));
 				boardList.add(board);
 			}
 		} catch (SQLException e) {
@@ -264,6 +264,20 @@ public class BoardDao {
 			e.printStackTrace();
 		}		
 		return deleteResult;
+	}
+
+	public int replyModify(int renum, String modiContents) {
+		String sql = "UPDATE BOARDREPLY SET RECONTENTS=? WHERE RENUM=?";
+		int updateResult = 0;
+		try {
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, modiContents);
+			pstmt.setInt(2, renum);
+			updateResult = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return updateResult;
 	}
 
 

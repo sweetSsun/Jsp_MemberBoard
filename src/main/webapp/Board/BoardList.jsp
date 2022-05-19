@@ -110,6 +110,7 @@
 		location.href = "${pageContext.request.contextPath }/Board/boardList?orderType=" + orderType;
 	}
 	
+	
 	$(document).ready(function(){
 		var orderOption = $("#orderTypeSel option");
 		// 아이디가 orderTypeSel 인 option태그
@@ -117,14 +118,18 @@
 		// 의 길이
 		var orderType = '${param.orderType}';
 		console.log(orderType);
-	
+		/*
+		var testVar = ${param.orderType};
+		console.log(typeof testVar);
+	*/
 		for(var i = 0; i < orderOption.length; i++){
-			if($(orderOption).eq(i).val() == orderType) {
-				console.log("value : " + $(orderOption).eq(i).val());
+			if(orderOption.eq(i).val() == orderType) {
+				console.log("value : " + orderOption.eq(i).val());
 				console.log(orderType);
 				// i번째 인덱스
-				$(orderOption).eq(i).attr("selected","selected");
+				orderOption.eq(i).attr("selected","selected");
 				// 파라미터 값이 해당 option태그 인덱스와 동일하면 그것을 selected
+				// 변수1의 이름의 속성을 변수2로 설정한다
 			}
 		}
 	});
