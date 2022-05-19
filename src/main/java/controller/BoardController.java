@@ -18,6 +18,7 @@ import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
 import dto.BoardDto;
+import dto.PageDto;
 import dto.ReplyDto;
 import service.BoardService;
 
@@ -28,7 +29,8 @@ import service.BoardService;
 			"/Board/boardModiInfo", "/Board/boardModify", "/Board/boardDelete",	"/Board/boardSearch",
 			"/Board/replyWrite", "/Board/replyWrite_ajax", "/Board/replyList_ajax", 
 			"/Board/replyDelete", "/Board/replyDelete_ajax",
-			"/Board/replyModify", "/Board/replyModify_ajax"})
+			"/Board/replyModify", "/Board/replyModify_ajax",
+			"/Board/boardListPaging"})
 public class BoardController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
@@ -115,6 +117,56 @@ public class BoardController extends HttpServlet {
 			/* 2. delete 성공 후 넘어와서 보내준 checkMsg 파라미터가 request 영역에 담겨있음.
 			 * 3. 디스패처로 forward 하기 때문에 request 영역에 살아있는 상태로 BoardList.jsp 페이지 이동
 			 * 4. BoardList.jsp에서 request 영역의 파라미터값이 있어서 alert 창이 실행됨 */
+			dispatcher.forward(request, response);
+			break;
+			
+		case "/Board/boardListPaging":
+			System.out.println("글목록 페이징 요청");
+
+			int page = 1; // 처음 게시판 이동했을 때 페이지 번호는 1페이지
+			if (request.getParameter("page") != null) {
+				// 요청하는 페이지 번호
+				page = Integer.parseInt(request.getParameter("page"));
+			}
+			System.out.println("페이지번호 : " + page);
+			
+			// Boards 테이블 전체글 갯수
+			int boardTotalCount = bsvc.getBoardToTalCount();
+			// 한 페이지에 보여줄 글 갯수
+			int viewCount = 3;
+			// 한 페이지에 보여줄 페이징 갯수
+			int pageNumCount = 3;
+			// 페이지에 보여줄 rownum의 시작, 끝번호
+			int startRow = (page - 1) * viewCount + 1;
+			int endRow = page * viewCount ;
+			
+			// 글목록 페이징 조회
+			ArrayList<BoardDto> boardPagingList = bsvc.getBoardPagingList(startRow, endRow);
+			request.setAttribute("boardList", boardPagingList);			
+
+			
+			// 글 최대값에 따라 페이지 번호 최대값
+			int maxPage = (int) (Math.ceil( (double)boardTotalCount/viewCount ) ); // ceil : 숫자 올림처리
+			// 출력될 페이지 번호 시작값
+			int startPage = (int) ( (Math.ceil( (double)page/pageNumCount )) -1 ) * pageNumCount + 1;
+			// 출력될 페이지 번호 마지막값
+			int endPage = startPage + pageNumCount - 1; 			
+			if(endPage > maxPage) {
+				endPage = maxPage;
+			}			
+			PageDto pagedto = new PageDto();
+			pagedto.setPage(page);
+			pagedto.setMaxPage(maxPage);
+			pagedto.setStartPage(startPage);
+			pagedto.setEndPage(endPage);
+			request.setAttribute("pagedto", pagedto);
+			
+			System.out.println("startPage : " + startPage);
+			System.out.println("endPage : " + endPage);
+			
+			
+			
+			dispatcher = request.getRequestDispatcher("BoardListPaging.jsp");	
 			dispatcher.forward(request, response);
 			break;
 			
@@ -358,7 +410,13 @@ public class BoardController extends HttpServlet {
 			System.out.println("댓글 수정 요청_ajax");
 			renum = Integer.parseInt(request.getParameter("renum"));
 			modiContents = request.getParameter("modiContents");
-//			updateResult = bsvc.replyModify(renum, modiContents);
+			updateResult = bsvc.replyModify(renum, modiContents);
+			if (updateResult > 0) {
+				result = "OK";
+			} else {
+				result = "Fail";
+			}
+			response.getWriter().append(result);
 			break;
 		}
 	}

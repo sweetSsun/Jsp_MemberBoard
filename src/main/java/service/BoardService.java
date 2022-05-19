@@ -183,6 +183,18 @@ public class BoardService {
 		int updateResult = bdao.replyModify(renum, modiContents);
 		return updateResult;
 	}
+
+	public int getBoardToTalCount() {
+		System.out.println("BoardService.getBoardToTalCount() 호출");
+		int totalCount = bdao.getBoardTotalCount();
+		return totalCount;
+	}
+
+	public ArrayList<BoardDto> getBoardPagingList(int startRow, int endRow) {
+		System.out.println("BoardService.getBoardPagingList() 호출");
+		ArrayList<BoardDto> boardPagingList = bdao.getBoardPagingList(startRow, endRow);
+		return boardPagingList;
+	}
 	
 	
 

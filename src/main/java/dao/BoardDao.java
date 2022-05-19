@@ -280,5 +280,61 @@ public class BoardDao {
 		return updateResult;
 	}
 
+	public int getBoardTotalCount() {
+		String sql = "SELECT COUNT(*) FROM BOARDS WHERE BSTATE=0";
+		int totalCount = 0;
+		try {
+			pstmt = con.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				totalCount = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return totalCount;
+	}
+
+	public ArrayList<BoardDto> getBoardPagingList(int startRow, int endRow) {
+		String sql = "SELECT *"
+//				+ " FROM ( SELECT ROWNUM RN, BOARDS.*"
+//				+ "       FROM BOARDS"
+//				+ "       WHERE BSTATE=0"
+//				+ "       ORDER BY BNO DESC)"
+				+ " FROM (SELECT ROWNUM RN, B.*, NVL( RE.RECOUNT, 0 ) AS RECOUNT"
+				+ " 	  FROM BOARDS B "
+				+ "    	  LEFT OUTER JOIN (SELECT REBNO, COUNT(REBNO) AS RECOUNT FROM BOARDREPLY GROUP BY REBNO) RE"
+				+ "       ON B.BNO=RE.REBNO"
+				+ " 	  WHERE BSTATE=0"
+				+ "		  ORDER BY BNO DESC)"
+				+ " WHERE RN BETWEEN ? AND ?";
+		ArrayList<BoardDto> boardPagingList = new ArrayList<BoardDto>();
+		BoardDto board = null;
+		
+		try {
+			pstmt = con.prepareStatement(sql);
+			pstmt.setInt(1, startRow);
+			pstmt.setInt(2, endRow);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				board = new BoardDto();
+				// rs(1)은 rownum으로 인덱스가 하나씩 밀림
+				board.setBno(rs.getInt(2));
+				board.setBwriter(rs.getString(3));
+				board.setBtitle(rs.getString(4));
+				board.setBcontents(rs.getString(5));
+				board.setBdate(rs.getString(6));
+				board.setBfilename(rs.getString(7));
+				board.setBhits(rs.getInt(8));
+				board.setRecount(rs.getInt(10));
+				boardPagingList.add(board);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return boardPagingList;
+	}
+
 
 }

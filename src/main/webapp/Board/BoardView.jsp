@@ -109,14 +109,22 @@
 									 	</td>	
 									 	<td style="text-align:right;">
 						 					<c:if test="${reply.rewriter == sessionScope.loginId }">
-												<button onclick="">수정</button>
+												<button onclick="replyModifyForm('re${reply.renum }', 'modiContent${reply.renum }', this)">수정</button>
 												<button onclick="replyDelete(${reply.renum }, ${boardView.bno })">삭제</button>
 								 			</c:if>
 										</td>				
 									</tr>
 									<tr>
-										<td class="replyContent" colspan="2">
-										[비공개 댓글] <br> ${reply.recontents }</td>
+										<td colspan="2">
+											<textarea rows="1" class="re${reply.renum }" readonly="readonly" style="border: none">[비공개 댓글] ${reply.recontents }</textarea>								
+								
+										<form action="replyModify" method="post" class="d_none re${reply.renum }">
+											<input type="hidden" name=bno value="${boardView.bno }">
+											<input type="hidden" name="renum" value="${reply.renum }">
+											<textarea name="modiContents" id="modiContent${reply.renum }">${reply.recontents }</textarea>
+											<button class="subBtn1" style="text-align: right">댓글수정</button>
+										</form>
+										</td>
 									</tr>
 								</c:when>
 								<%-- 제 3자일 때 --%>
@@ -134,27 +142,22 @@
 									${reply.redate }</td>
 								<td style="text-align: right;">
 									<c:if test="${reply.rewriter == sessionScope.loginId }">
-										<button onclick="replyModifyForm('re${reply.renum }', 'modiContent${reply.renum }')">수정</button>
+										<button onclick="replyModifyForm('re${reply.renum }', 'modiContent${reply.renum }', this)">수정</button>
+										<!-- this :: 버튼태그 그 자체 (object를 매개변수로 전달). 클릭된 댓글 번호의 수정 버튼태그 -->
 										<button onclick="replyDelete(${reply.renum }, ${boardView.bno })">삭제</button>
 									</c:if>
 								</td>
 							</tr>
 							<tr>
-								<td class="replyContent" colspan="2">${reply.recontents }
-								<form action="replyModify" method="post" class="d_none" id="re${reply.renum }">
+								<%-- <td class="replyContent" colspan="2">${reply.recontents } --%>
+								<td colspan="2">
+									<textarea rows="1" class="re${reply.renum }" readonly="readonly" style="border: none">${reply.recontents }</textarea>								
+								
+								<form action="replyModify" method="post" class="d_none re${reply.renum }">
 									<input type="hidden" name=bno value="${boardView.bno }">
-									<table border="1">
-										<tr>
-											<td><input readonly value="${reply.rewriter }"></td>
-											<td><input readonly name="renum" value="${reply.renum }"></td>
-											<td><button>수정완료</button></td>
-										</tr>
-										<tr>
-											<td colspan="3">
-											<input type="text" name="modiContents" id="modiContent${reply.renum }" value="${reply.recontents }">
-											</td>
-										</tr>
-									</table>
+									<input type="hidden" name="renum" value="${reply.renum }">
+									<textarea name="modiContents" id="modiContent${reply.renum }">${reply.recontents }</textarea>
+									<button class="subBtn1">수정완료</button>
 								</form>
 								</td>
 							</tr>
@@ -389,7 +392,23 @@
 		location.href = "${pageContext.request.contextPath }/Board/replyDelete?renum=" + renum + "&bno=" + bno;
 	}
 	
-	// ajax로 댓글 수정
+	// Controller 댓글 수정폼 출력 (form 태그 숨김/출력 토글 기능으로)
+	function replyModifyForm(modiRenumId, modiRecontentsId, btnObj){
+		console.log( $("#"+modiRenumId) );
+		//$("#"+modiRenumId).toggleClass("d_none");
+		if ($(btnObj).text() == "수정"){
+			$(btnObj).text("취소");
+		} else {
+			$(btnObj).text("수정");
+		}
+		
+		console.log( $("."+modiRenumId) );
+		$("."+modiRenumId).toggleClass("d_none");
+		$("#"+modiRecontentsId).focus();		
+		//textArea_Height();
+	}
+	
+	// ajax로 댓글 수정폼
 	function replyModifyForm_ajax(renum){
 		var modicontents;
 		console.log("수정할 댓글번호 : " + renum);
@@ -409,21 +428,26 @@
 		});
 	}
 	
-	// Controller 댓글 수정폼 출력 (form 태그 숨김/출력 토글 기능으로)
-	function replyModifyForm(modiRenumId, modiRecontentsId){
-		console.log( $("#"+modiRenumId) );
-		$("#"+modiRenumId).toggleClass("d_none");
-		$("#"+modiRecontentsId).focus();		
-	}
-	
-	function replyModify(renum){
-		//var modicontents;  // 수정 필요~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	function replyModify_ajax(renum){
 		console.log("renum : " + renum);
 		var modiContents = $("#modiContents").val();
 		console.log("modiContents : " + modiContents);
-		location.href = "${pageContext.request.contextPath }/Board/replyModify_ajax?renum=" + renum
-						+ "&modiContents=" + modiContents;
-		
+		$.ajax({
+			type : "get",
+			url : "replyModify_ajax",
+			data : {"renum" : renum, "modiContents" : modiContents},
+			success : function(result){
+				console.log("result : " + result);
+ 				if (result == "OK") {
+					console.log("댓글 수정 성공");
+					getReplyList();
+					alert(renum + "번 댓글이 수정되었습니다.");
+				} else {
+					console.log("댓글 수정 실패");
+					alert(renum + "번 댓글 수정에 실패했습니다.");
+				} 
+			}
+		});
 	}
 	
 	// 댓글 목록과 수정 댓글 변경을 할 변수에 html 코드를 누적하는 함수
@@ -457,9 +481,7 @@
 				output += "<td>" + result[i].rewriter + "</td>";
 				output += "<td>" + result[i].redate + "</td>";
 
-				
-				output += "<td><button onclick='replyModify(\"" + result[i].renum + "\")'>수정완료</button></td>"; // 여기~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-				//,\""+modicontents+"\"
+				output += "<td><button onclick='replyModify_ajax(\"" + result[i].renum + "\")'>수정완료</button></td>";
 				
 				output += "</tr>";
 				output += "<tr><td colspan='3'><textarea id='modiContents'>" + result[i].recontents + "</textarea></td></tr>";
@@ -479,7 +501,7 @@
 					
 					
 					output += "</tr>"
-					output += "<tr><td colspan='3'>" + result[i].recontents + "</td></tr>";
+					output += "<tr><td colspan='3'>[비공개 댓글] " + result[i].recontents + "</td></tr>";
 				} else {
 					output += "<tr><td colspan='3'>[비공개 댓글입니다.]</td></tr>";						
 				}
