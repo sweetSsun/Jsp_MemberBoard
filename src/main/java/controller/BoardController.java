@@ -123,7 +123,7 @@ public class BoardController extends HttpServlet {
 		case "/Board/boardListPaging":
 			System.out.println("글목록 페이징 요청");
 
-			int page = 1; // 처음 게시판 이동했을 때 페이지 번호는 1페이지
+			int page = 1; // 처음 게시판페이지로 이동했을 때 페이지 번호는 1페이지
 			if (request.getParameter("page") != null) {
 				// 요청하는 페이지 번호
 				page = Integer.parseInt(request.getParameter("page"));
@@ -133,7 +133,7 @@ public class BoardController extends HttpServlet {
 			// Boards 테이블 전체글 갯수
 			int boardTotalCount = bsvc.getBoardToTalCount();
 			// 한 페이지에 보여줄 글 갯수
-			int viewCount = 3;
+			int viewCount = 5;
 			// 한 페이지에 보여줄 페이징 갯수
 			int pageNumCount = 3;
 			// 페이지에 보여줄 rownum의 시작, 끝번호

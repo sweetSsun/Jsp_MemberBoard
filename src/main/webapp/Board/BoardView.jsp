@@ -428,10 +428,12 @@
 		});
 	}
 	
+	// 매개변수 modiContents 삭제
 	function replyModify_ajax(renum){
 		console.log("renum : " + renum);
 		var modiContents = $("#modiContents").val();
 		console.log("modiContents : " + modiContents);
+		
 		$.ajax({
 			type : "get",
 			url : "replyModify_ajax",
@@ -448,6 +450,7 @@
 				} 
 			}
 		});
+		
 	}
 	
 	// 댓글 목록과 수정 댓글 변경을 할 변수에 html 코드를 누적하는 함수
@@ -469,6 +472,17 @@
 			(이미 여기서 modicontents의 value를 검색하고 값을 넣은 채로 innerHTML 됨 >> innerTHML 되고 나서 값이 생기는 것))
 		4. 댓글수정 폼 출력 (modicontents의 value는 undifined인 상태로 폼이 출력된 것)
 		5. 수정완료 버튼 클릭
+		
+		-- 다시다시다시다시~~~~~~~~~~~~~~~~~~~~~~~~
+		1. 수정 버튼 클릭
+		2. 댓글목록 조회하는 ajax 진행 >> result 반환
+		3. ouput 코드 작성 >> 입력 
+		HTML이 먼저 입력된 후에 jQuery가 실행된다.
+		jQuery로 준 매개변수 자리에는 innerHTML할 시기에 입력이 안되어있는 것. 아무것도 입력 안된 상태로 매개변수가 전달된 것
+		
+		4. 댓글수정 폼 출력 (modicontents의 value는 undifined인 상태로 폼이 출력된 것)
+		5. 수정완료 버튼 클릭
+		
 		*/
 		
 		var loginMemberId = '${sessionScope.loginId }';
@@ -481,7 +495,9 @@
 				output += "<td>" + result[i].rewriter + "</td>";
 				output += "<td>" + result[i].redate + "</td>";
 
-				output += "<td><button onclick='replyModify_ajax(\"" + result[i].renum + "\")'>수정완료</button></td>";
+				output += "<td><button onclick='replyModify_ajax(\"" + result[i].renum
+//						+ "\",\""+ $("#modiContents").val() +"\")'>수정완료</button></td>";
+						+ "\")'>수정완료</button></td>";
 				
 				output += "</tr>";
 				output += "<tr><td colspan='3'><textarea id='modiContents'>" + result[i].recontents + "</textarea></td></tr>";
@@ -522,7 +538,7 @@
 		} 
 		output += "</table>";
 		$("#replyList_ajax").html(output);
-		
+		console.log($("#modiContents").val());
 	}
 		
 </script>
