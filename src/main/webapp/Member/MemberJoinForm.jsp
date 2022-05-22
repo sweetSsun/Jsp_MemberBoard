@@ -34,26 +34,28 @@
 					<tr>
 						<td><i class="fa-regular fa-address-card"></i></td>
 						<th>아이디</th>
-						<td><input type="text" name="memberId" id="userId"
-							placeholder="3~10자리" onfocusout="checkId()"> <span
-							id="idCheckMsg" class="font10"></span></td>
+						<td><input type="text" name="memberId" id="userId" placeholder="3~10자리" onfocusout="checkId()">
+							<span id="idCheckMsg" class="font10"></span>
+						</td>
 					</tr>
 					<tr>
 						<td><i class="fa-regular fa-address-card"></i></td>
 						<th>비밀번호</th>
-						<td><input type="password" name="memberPw" id="userPw"
-							placeholder="4~10자리" onfocusout="checkPw()"> <span
-							id="pwCheckMsg" class="font10"></span></td>
+						<td><input type="password" name="memberPw" id="userPw" placeholder="4~10자리" onfocusout="checkPw()"> 
+							<span id="pwCheckMsg" class="font10"></span>
+						</td>
 					</tr>
 					<tr>
 						<td><i class="fa-regular fa-address-card"></i></td>
 						<th>비밀번호 확인</th>
-						<td><input type="password" id="pwConfirm"> <span
-							id="pwConfirmMsg" class="font10"></span></td>
+						<td><input type="password" id="pwConfirm"> 
+							<span id="pwConfirmMsg" class="font10"></span>
+						</td>
 					</tr>
 					<tr>
 						<td><i class="fa-regular fa-address-card"></i></td>
 						<th>이름</th>
+						
 						<td><input type="text" name="memberName" id="userName"></td>
 						<!-- required : 입력했는지 확인해주는 속성
                         required만 단독으로 써도 되고 required="required" 라고 써도 작동 (속성값이 required 뿐) -->

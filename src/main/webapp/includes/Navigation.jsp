@@ -4,19 +4,19 @@
 
     <div class="navigation">
         <ul>
-            <li><a href="${pageContext.request.contextPath }/MainPage.jsp">메인페이지</a></li>
-            <li><a href="${pageContext.request.contextPath }/Board/boardList">게시판</a></li>
-            <li><a href="${pageContext.request.contextPath }/Board/boardListPaging">게시판(paging)</a></li>
+            <li class="leftFloat"><a href="${pageContext.request.contextPath }/MainPage.jsp">메인페이지</a></li>
+            <li class="leftFloat"><a href="${pageContext.request.contextPath }/Board/boardList">게시판</a></li>
+            <li class="leftFloat"><a href="${pageContext.request.contextPath }/Board/boardListPaging">게시판(paging)</a></li>
             
             <c:choose>
             <c:when test="${sessionScope.loginId == null }">
-	            <li><a href="${pageContext.request.contextPath }/Member/MemberJoinForm.jsp">회원가입</a></li>
-    	        <li><a href="${pageContext.request.contextPath }/Member/MemberLoginForm.jsp">로그인</a></li>
+    	        <li class="rightFloat"><a href="${pageContext.request.contextPath }/Member/MemberLoginForm.jsp">로그인</a></li>
+	            <li class="rightFloat"><a href="${pageContext.request.contextPath }/Member/MemberJoinForm.jsp">회원가입</a></li>
             </c:when>
             <c:otherwise>
-	            <li><a href="${pageContext.request.contextPath }/Member/memberInfo?mid=${sessionScope.loginId }">내정보확인</a></li>
+    	        <li class="rightFloat"><a href="${pageContext.request.contextPath }/Member/memberLogout">로그아웃</a></li>    
+	            <li class="rightFloat"><a href="${pageContext.request.contextPath }/Member/memberInfo?mid=${sessionScope.loginId }">내정보확인</a></li>
 	            <%-- <li><a href="${pageContext.request.contextPath }/Member/memberInfo">내정보확인</a></li> --%>
-    	        <li><a href="${pageContext.request.contextPath }/Member/memberLogout">로그아웃</a></li>    
             </c:otherwise>
             </c:choose>            
         </ul>

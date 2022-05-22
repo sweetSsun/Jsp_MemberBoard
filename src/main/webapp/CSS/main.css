@@ -22,19 +22,26 @@ div{
     list-style: none;
     padding-left: 0px;
 }
-.navigation ul li{
+.leftFloat{
     float: left;
     margin-right: 5px;
     margin-left: 5px;
     font-weight: bold;
 }
+.rightFloat{
+	float: right;
+    margin-right: 5px;
+    margin-left: 5px;
+    font-weight: bold;
+}
+
 li a{
     text-decoration: none;
     color: white;
     padding: 5px;
 }
 .contents{
-    background-color: beige;
+    background-color: rgb(255, 235, 230);
     margin-bottom: 10px;
     padding: 10px;
     min-height: 300px; /*컨텐츠가 없어도 영역의 최소값*/

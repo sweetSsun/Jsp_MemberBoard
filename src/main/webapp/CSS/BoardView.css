@@ -23,20 +23,28 @@ table {
 
 input {
     border: 0px;
-    border-bottom: 2px solid goldenrod;
+    border-bottom: 2px solid rgb(255, 222, 210);
     margin: 5px;
 }
 
+textarea, textarea:focus {
+	border-radius: 7px;
+	width: 100%;
+	outline-color: rgb(255, 222, 210);
+}
+
 .subBtn1 {
-	font: bold;
+	font-weight: bold;
+	font-size: medium;
     background-color: white;
     border: 3px solid slategray;
     padding: 5px 10px;
+    border-radius: 7px;
 }
 
 .subBtn1:hover {
-    background-color: goldenrod;
-    color: white;
+    background-color: rgb(136, 54, 11);
+    color: rgb(255, 222, 210);
     cursor: pointer;
 }
 
@@ -66,6 +74,8 @@ input {
 .replyForm textarea{
 	width: 100%;
 	border-radius: 7px;
+	outline-color: rgb(255, 222, 210);
+	
 }
 
 .rewriterSpan {

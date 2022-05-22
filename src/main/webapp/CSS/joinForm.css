@@ -23,14 +23,26 @@ table {
 
 input {
     border: 0px;
-    border-bottom: 2px solid goldenrod;
+    border-bottom: 2px solid rgb(255, 222, 210);
     margin: 5px;
 }
 
-textarea, textarea:focus {
+input:focus {
+	border: none;
+	outline-color: rgb(255, 216, 206);
+}
+
+textarea {
+	border-radius: 7px;
+	width: 100%;
+	outline-color: rgb(255, 222, 210);
+}
+
+textarea:focus{
 	border-radius: 7px;
 	width: 100%;
 }
+
 
 .subBtn1 {
 	font-weight: bold;
@@ -42,8 +54,8 @@ textarea, textarea:focus {
 }
 
 .subBtn1:hover {
-    background-color: goldenrod;
-    color: white;
+    background-color: rgb(136, 54, 11);
+    color: rgb(255, 222, 210);
     cursor: pointer;
 }
 
