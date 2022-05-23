@@ -41,7 +41,7 @@ li a{
     padding: 5px;
 }
 .contents{
-    background-color: rgb(255, 235, 230);
+    background-color: rgb(255, 236, 223);
     margin-bottom: 10px;
     padding: 10px;
     min-height: 300px; /*컨텐츠가 없어도 영역의 최소값*/
